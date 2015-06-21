@@ -2,67 +2,20 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
+         id="uece.ees"
          point="org.eclipse.ui.newWizards">
       <category
-            id="customplugin.category.wizards"
-            name="Custom Wizards">
+            id="UefiIde.category.wizards"
+            name="UefiIde Wizards">
       </category>
       <wizard
-            category="customplugin.category.wizards"
-            class="customplugin.wizards.CustomProjectNewWizard"
-            id="customplugin.wizard.new.custom"
-            name="Custom Project"
+            category="UefiIde.category.wizards"
+            class="org.uefiide.wizards.NewProjectWizard"
+            finalPerspective="org.eclipse.cdt.ui.CPerspective"
+            id="UefIde.wizards.new.project"
+            name="New EDK2 Project Wizard"
             project="true">
       </wizard>
-   </extension>
-   <extension
-         point="org.eclipse.ui.views">
-      <view
-            class="org.eclipse.ui.navigator.CommonNavigator"
-            icon="icons/sample.gif"
-            id="customplugin.id"
-            name="Custom Plugin Navigator">
-      </view>
-   </extension>
-   <extension
-         point="org.eclipse.ui.navigator.viewer">
-      <viewerActionBinding
-            viewerId="customplugin.id">
-         <includes>
-            <actionExtension
-                  pattern="org.eclipse.ui.navigator.resources.*">
-            </actionExtension>
-         </includes>
-      </viewerActionBinding>
-      <viewerContentBinding
-            viewerId="customplugin.id">
-         <includes>
-            <contentExtension
-                  pattern="org.eclipse.ui.navigator.resourceContent">
-            </contentExtension>
-            <contentExtension
-                  pattern="org.eclipse.ui.navigator.resources.filters.*">
-            </contentExtension>
-            <contentExtension
-                  pattern="org.eclipse.ui.navigator.resources.linkHelper">
-            </contentExtension>
-            <contentExtension
-                  pattern="org.eclipse.ui.navigator.resources.workingSets">
-            </contentExtension>
-         </includes>
-      </viewerContentBinding>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.eclipse.ui.resourcePerspective">
-         <view
-               id="customplugin.id"
-               ratio="0.5"
-               relationship="stack"
-               relative="org.eclipse.ui.navigator.ProjectExplorer">
-         </view>
-      </perspectiveExtension>
    </extension>
 
 </plugin>
