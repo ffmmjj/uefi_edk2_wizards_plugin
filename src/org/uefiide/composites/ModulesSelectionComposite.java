@@ -62,8 +62,24 @@ public class ModulesSelectionComposite extends Composite {
 		for(Edk2Module module : modules) {
 			Button moduleCheckBtn = new Button(window, SWT.CHECK);
 			moduleCheckBtn.setText(module.getName() + " (" + module.getPath() + ")");
+			moduleCheckBtn.setData("module_name", module.getName());
+			moduleCheckBtn.setData("module_path", module.getPath());
 			moduleBtns.add(moduleCheckBtn);
 		}
+	}
+	
+	public List<Edk2Module> getSelectedModules() {
+		List<Edk2Module> selectedModules = new LinkedList<>();
+		
+		for(Button btn : moduleBtns) {
+			if(btn.getSelection()) {
+				selectedModules.add(
+						new Edk2Module(	(String)btn.getData("module_name"), 
+										(String)btn.getData("module_path"))
+						);
+			}
+		}
+		return selectedModules;
 	}
 
 }

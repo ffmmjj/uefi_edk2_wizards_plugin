@@ -1,5 +1,6 @@
 package org.uefiide.wizards;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,8 +11,15 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
+import org.uefiide.projectmanip.ProjectCreator;
 import org.uefiide.projectmanip.ProjectSettingsManager;
 
+/**
+ * 
+ * @author felipe
+ * Inspired by the tutorials found on 
+ * https://cvalcarcel.wordpress.com/2009/07/26/writing-an-eclipse-plug-in-part-4-create-a-custom-project-in-eclipse-new-project-wizard-the-behavior/
+ */
 public class NewProjectWizard extends Wizard implements INewWizard {
 
 	private WizardNewProjectCreationPage edk2RootSelectionPage;
@@ -28,6 +36,15 @@ public class NewProjectWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
+		String name = edk2RootSelectionPage.getProjectName();
+	    URI location = null;
+	    if (!edk2RootSelectionPage.useDefaults()) {
+	        location = edk2RootSelectionPage.getLocationURI();
+	    } // else location == null
+	 
+	    ProjectCreator.createEdk2Project(name, location, wizardSelectModulesPage.getSelectedModules());
+	    return true;
+		/*
 		System.out.println(edk2RootSelectionPage.getLocationPath().toString());
 		System.out.println(edk2RootSelectionPage.getProjectName());
 		
@@ -43,6 +60,7 @@ public class NewProjectWizard extends Wizard implements INewWizard {
 			System.out.println(p);
 		}
 		return false;
+		*/
 	}
 
 	@Override

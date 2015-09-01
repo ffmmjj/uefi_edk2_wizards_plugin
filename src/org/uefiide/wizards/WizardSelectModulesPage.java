@@ -10,6 +10,7 @@ import org.uefiide.composites.ModulesSelectionComposite;
 import org.uefiide.structures.Edk2Module;
 
 public class WizardSelectModulesPage extends WizardPage {
+	ModulesSelectionComposite pageComposite;
 
 	public WizardSelectModulesPage(String pageName) {
 		super(pageName);
@@ -22,10 +23,11 @@ public class WizardSelectModulesPage extends WizardPage {
 		modules.add(new Edk2Module("UefiBaseLib", "MdePkg/Library/UefiBaseLib/UefiBaseLib.inf"));
 		modules.add(new Edk2Module("UsbDriver", "MdeModulePkg/Universal/Bus/UsbDriver/UsbDriver.inf"));
 		
-		ModulesSelectionComposite pageComposite = new ModulesSelectionComposite(parent, 
-																				SWT.NULL,
-																				modules);
+		pageComposite = new ModulesSelectionComposite(parent, SWT.NULL, modules);
 		setControl(pageComposite);
 	}
 
+	public List<Edk2Module> getSelectedModules() {
+		return pageComposite.getSelectedModules();
+	}
 }
