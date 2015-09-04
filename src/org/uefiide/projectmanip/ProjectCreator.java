@@ -1,26 +1,25 @@
 package org.uefiide.projectmanip;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.uefiide.structures.Edk2Module;
 
 public class ProjectCreator {
 	public static IProject createEdk2Project(String name, URI location, List<Edk2Module> modules) {
 		IProject newEdk2Project = createBaseProject(name, location);
 		
-		try {
-			addToProjectStructure(newEdk2Project, modules);
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		addToProjectStructure(newEdk2Project, modules);
 		
 		return newEdk2Project;
 	}
@@ -56,7 +55,8 @@ public class ProjectCreator {
             createFolder((IFolder) parent);
         }
         if (!folder.exists()) {
-            folder.create(false, true, null);
+        	folder.create(IResource.VIRTUAL, false, null);
+            //folder.create(false, false, null);
         }
     }
  
@@ -68,10 +68,22 @@ public class ProjectCreator {
      * @param paths
      * @throws CoreException
      */
-    private static void addToProjectStructure(IProject newProject, List<Edk2Module> modules) throws CoreException {
+    private static void addToProjectStructure(IProject newProject, List<Edk2Module> modules) {
         for (Edk2Module module : modules) {
-            IFolder etcFolders = newProject.getFolder(module.getPath());
-            createFolder(etcFolders);
+        	IFolder srcFolder = newProject.getFolder(module.getPath().substring(0, module.getPath().lastIndexOf('/')));
+        	try {
+				createFolder(srcFolder);
+			         	
+				IFile infFile  = srcFolder.getFile(module.getName() + ".inf");
+            //	IFolder etcFolders = newProject.getFolder(module.getPath());
+				System.out.println(newProject.getLocation() + module.getPath());
+				System.out.println(module.getPath());
+				String edk2Location = "/home/felipe/dev/edk2stub/";
+				infFile.createLink(new Path(edk2Location + module.getPath()), IResource.VIRTUAL, null);
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
     }
 }
