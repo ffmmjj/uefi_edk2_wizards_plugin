@@ -2,7 +2,9 @@ package org.uefiide.wizards;
 
 import java.net.URI;
 
+import org.eclipse.cdt.managedbuilder.core.BuildException;
 import org.eclipse.cdt.managedbuilder.ui.wizards.NewMakeProjFromExisting;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
@@ -39,7 +41,15 @@ public class NewProjectWizard extends NewMakeProjFromExisting implements INewWiz
 	        location = edk2RootSelectionPage.getLocationURI();
 	    } // else location == null
 	 
-	    ProjectCreator.createEdk2Project(name, location, wizardSelectModulesPage.getSelectedModules());
+	    try {
+			ProjectCreator.createEdk2Project(name, location, wizardSelectModulesPage.getSelectedModules());
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BuildException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	    return true;
 		/*
 		System.out.println(edk2RootSelectionPage.getLocationPath().toString());

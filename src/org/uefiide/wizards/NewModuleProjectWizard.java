@@ -3,6 +3,7 @@ package org.uefiide.wizards;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.cdt.core.model.CoreModel;
+import org.eclipse.cdt.managedbuilder.core.BuildException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -17,6 +18,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.uefiide.projectmanip.Edk2ModuleProjectCreator;
+import org.uefiide.projectmanip.ProjectCreator;
 import org.uefiide.wizards.pages.NewModuleWizardPage;
 
 public class NewModuleProjectWizard extends Wizard implements INewWizard, IRunnableWithProgress {
@@ -51,10 +53,14 @@ public class NewModuleProjectWizard extends Wizard implements INewWizard, IRunna
 			newProjectHandle.setDescription(projDesc, arg0);*/
 			
 			Edk2ModuleProjectCreator.CreateProjectStructure(newProjectHandle, newProjectPath.toString());
+			ProjectCreator.AddCProjectNatureToProject(newProjectHandle);
 			
 		} catch (CoreException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		} catch (BuildException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}; 
 	}
 
