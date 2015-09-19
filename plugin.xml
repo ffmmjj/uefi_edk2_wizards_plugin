@@ -16,6 +16,14 @@
             name="New EDK2 Project Wizard"
             project="true">
       </wizard>
+      <wizard
+            category="UefiIde.category.wizards"
+            class="org.uefiide.wizards.NewModuleProjectWizard"
+            finalPerspective="org.eclipse.cdt.ui.CPerspective"
+            id="UefIde.wizards.new.module"
+            name="New EDK2 Module Wizard"
+            project="true">
+      </wizard>
    </extension>
 
 </plugin>

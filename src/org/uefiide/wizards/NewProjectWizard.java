@@ -1,18 +1,14 @@
 package org.uefiide.wizards;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.cdt.managedbuilder.ui.wizards.NewMakeProjFromExisting;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.uefiide.projectmanip.ProjectCreator;
-import org.uefiide.projectmanip.ProjectSettingsManager;
 
 /**
  * 
@@ -20,7 +16,7 @@ import org.uefiide.projectmanip.ProjectSettingsManager;
  * Inspired by the tutorials found on 
  * https://cvalcarcel.wordpress.com/2009/07/26/writing-an-eclipse-plug-in-part-4-create-a-custom-project-in-eclipse-new-project-wizard-the-behavior/
  */
-public class NewProjectWizard extends Wizard implements INewWizard {
+public class NewProjectWizard extends NewMakeProjFromExisting implements INewWizard {
 
 	private WizardNewProjectCreationPage edk2RootSelectionPage;
 	private WizardSelectModulesPage wizardSelectModulesPage;
@@ -36,6 +32,7 @@ public class NewProjectWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
+		super.performFinish();
 		String name = edk2RootSelectionPage.getProjectName();
 	    URI location = null;
 	    if (!edk2RootSelectionPage.useDefaults()) {

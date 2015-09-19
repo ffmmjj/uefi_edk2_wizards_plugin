@@ -40,7 +40,7 @@ public class ModulesSelectionComposite extends Composite {
 		
 		scrolledComposite.setContent(scrollParent);
 		
-		Button btnCheckButton = new Button(this, SWT.CHECK);
+		final Button btnCheckButton = new Button(this, SWT.CHECK);
 		btnCheckButton.setText("Select all");
 		btnCheckButton.addSelectionListener(new SelectionAdapter() {
 			@Override
