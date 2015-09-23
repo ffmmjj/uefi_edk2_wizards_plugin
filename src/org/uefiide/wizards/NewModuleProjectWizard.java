@@ -2,7 +2,6 @@ package org.uefiide.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.managedbuilder.core.BuildException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -18,6 +17,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.uefiide.projectmanip.Edk2ModuleProjectCreator;
+import org.uefiide.projectmanip.ProjectBuildConfigManager;
 import org.uefiide.projectmanip.ProjectCreator;
 import org.uefiide.wizards.pages.NewModuleWizardPage;
 
@@ -47,19 +47,18 @@ public class NewModuleProjectWizard extends Wizard implements INewWizard, IRunna
 		try {
 			newProjectHandle.create(arg0);
 			newProjectHandle.open(arg0);
-			/*projDesc = ResourcesPlugin.getWorkspace().newProjectDescription(newProjectHandle.getName());
-			projDesc.setLocation(newProjectPath);
+			//projDesc = ResourcesPlugin.getWorkspace().newProjectDescription(newProjectHandle.getName());
+			//projDesc.setLocation(newProjectPath);
 			
-			newProjectHandle.setDescription(projDesc, arg0);*/
+			//newProjectHandle.setDescription(projDesc, arg0);
 			
 			Edk2ModuleProjectCreator.CreateProjectStructure(newProjectHandle, newProjectPath.toString());
 			ProjectCreator.AddCProjectNatureToProject(newProjectHandle);
+			ProjectBuildConfigManager.setEDK2BuildCommands(newProjectHandle, null);
 			
 		} catch (CoreException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (BuildException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}; 
 	}
