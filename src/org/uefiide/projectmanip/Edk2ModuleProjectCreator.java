@@ -36,7 +36,7 @@ public class Edk2ModuleProjectCreator {
 			String[] subDirs = nodeFile.list();
 
 			for(String filename : subDirs){
-				if(!filename.equals(".project")) {
+				if(!filename.equals(".project") && !filename.equals(".cproject")) {
 					addToProject(project, srcFolder, nodeFile.getAbsolutePath(), filename);
 				}
 			}
