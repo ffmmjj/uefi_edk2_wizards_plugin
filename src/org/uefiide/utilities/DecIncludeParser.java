@@ -17,6 +17,7 @@ public class DecIncludeParser {
 	}
 
 	public Iterable<String> extractAbsoluteIncludePaths() {
+		/*
 		List<String> absoluteIncludePaths = new ArrayList<>();
 		Iterable<String> relativeIncludePaths = this.edk2Package.getRelativeIncludePaths();
 		
@@ -25,5 +26,7 @@ public class DecIncludeParser {
 		}
 		
 		return absoluteIncludePaths;
+		*/
+		return null;
 	}
 }

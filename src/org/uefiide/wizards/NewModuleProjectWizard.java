@@ -36,6 +36,7 @@ import org.uefiide.projectmanip.Edk2ModuleProjectCreator;
 import org.uefiide.projectmanip.ProjectBuildConfigManager;
 import org.uefiide.projectmanip.ProjectCreator;
 import org.uefiide.projectmanip.ProjectSettingsManager;
+import org.uefiide.structures.Edk2Package;
 import org.uefiide.wizards.pages.NewModuleWizardPage;
 
 public class NewModuleProjectWizard extends Wizard implements INewWizard, IRunnableWithProgress {
@@ -93,8 +94,14 @@ public class NewModuleProjectWizard extends Wizard implements INewWizard, IRunna
 			pdMgr.setProjectDescription(newProjectHandle, cProjDesc);
 			
 			Edk2ModuleProjectCreator.CreateProjectStructure(newProjectHandle, new Path(newModuleWizardPage.getLocation()).removeLastSegments(1).toString());
-			//new ProjectSettingsManager(newProjectHandle).setIncludePaths(new ArrayList<String>());
-			ProjectBuildConfigManager.setEDK2BuildCommands(newProjectHandle, null);
+			Edk2Package edk2Package = new Edk2Package("/home/felipe/dev/repos/git/edk2", "/home/felipe/dev/repos/git/edk2/MdePkg/MdePkg.dec");
+			
+			new ProjectSettingsManager(newProjectHandle).setIncludePaths(edk2Package.getAbsoluteIncludePaths());
+			/**
+			 * TODO include paths were successfully added - but the indexer policy must be changed
+			 * to include all headers, not only the ones present in the workspace.
+			 */
+			//ProjectBuildConfigManager.setEDK2BuildCommands(newProjectHandle, null);
 			
 		} catch (CoreException e1) {
 			e1.printStackTrace();
