@@ -65,34 +65,12 @@ public class NewModuleProjectWizard extends Wizard implements INewWizard, IRunna
 		try {
 			newProjectHandle.create(arg0);
 			newProjectHandle.open(arg0);
-			//projDesc = ResourcesPlugin.getWorkspace().newProjectDescription(newProjectHandle.getName());
 			projDesc = ResourcesPlugin.getWorkspace().newProjectDescription(newModuleWizardPage.getProjName());
 			projDesc.setLocation(newProjectPath);
 			
-			/*ProjectCreatedActions prjCreator = new ProjectCreatedActions();
-			prjCreator.setProject(newProjectHandle);
-			prjCreator.setProjectLocation(newProjectPath);
-			prjCreator.setConfigs(new Configuration[0]);
-			prjCreator.createProject(null, CCorePlugin.DEFAULT_INDEXER, true);*/
 			CCorePlugin.getDefault().createCDTProject(projDesc, newProjectHandle, null);
-
-			// Set up build information
-			ICProjectDescriptionManager pdMgr = CoreModel.getDefault().getProjectDescriptionManager();
-			ICProjectDescription cProjDesc = pdMgr.createProjectDescription(newProjectHandle, false);
-			ManagedBuildInfo info = ManagedBuildManager.createBuildInfo(newProjectHandle);
-			ManagedProject mProj = new ManagedProject(cProjDesc);
-			info.setManagedProject(mProj);
-
-			CfgHolder cfgHolder = new CfgHolder(null, null);
-			String s = "0";
-			Configuration config = new Configuration(mProj, (ToolChain)null, ManagedBuildManager.calculateChildId(s, null), cfgHolder.getName());
-			IBuilder builder = config.getEditableBuilder();
-			builder.setManagedBuildOn(false);
-			CConfigurationData data = config.getConfigurationData();
-			cProjDesc.createConfiguration(ManagedBuildManager.CFG_DATA_PROVIDER_ID, data);
-
-			pdMgr.setProjectDescription(newProjectHandle, cProjDesc);
 			
+			Edk2ModuleProjectCreator.ConfigureProjectNature(newProjectHandle);
 			Edk2ModuleProjectCreator.CreateProjectStructure(newProjectHandle, new Path(newModuleWizardPage.getLocation()).removeLastSegments(1).toString());
 			Edk2Package edk2Package = new Edk2Package("/home/felipe/dev/repos/git/edk2", "/home/felipe/dev/repos/git/edk2/MdePkg/MdePkg.dec");
 			
@@ -101,7 +79,7 @@ public class NewModuleProjectWizard extends Wizard implements INewWizard, IRunna
 			 * TODO include paths were successfully added - but the indexer policy must be changed
 			 * to include all headers, not only the ones present in the workspace.
 			 */
-			//ProjectBuildConfigManager.setEDK2BuildCommands(newProjectHandle, null);
+			ProjectBuildConfigManager.setEDK2BuildCommands(newProjectHandle, null);
 			
 		} catch (CoreException e1) {
 			e1.printStackTrace();
