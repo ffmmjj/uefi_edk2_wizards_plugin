@@ -61,7 +61,7 @@ public class ModulesSelectionComposite extends Composite {
 	private void fillModulesListWindow(Composite window, List<Edk2Module> modules) {
 		for(Edk2Module module : modules) {
 			Button moduleCheckBtn = new Button(window, SWT.CHECK);
-			moduleCheckBtn.setText(module.getName() + " (" + module.getPath() + ")");
+			moduleCheckBtn.setText(module.getName() + " (" + module.getElementPath() + ")");
 			moduleCheckBtn.setData("module_name", module.getName());
 			moduleBtns.add(moduleCheckBtn);
 		}

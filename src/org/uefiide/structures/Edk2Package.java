@@ -6,21 +6,19 @@ import org.uefiide.utilities.PackageDecParser;
 
 
 public class Edk2Package extends Edk2Element {
-	private String path;
 	private PackageDecParser parser;
 	
-	public Edk2Package(String workspacePath, String path) {
-		super(workspacePath);
-		this.path = path;
+	public Edk2Package(String path) {
+		super(path);
+		this.parser = new PackageDecParser(this);
+	}
+	
+	public Edk2Package(String path, String workspacePath) {
+		super(path, workspacePath);
 		this.parser = new PackageDecParser(this);
 	}
 
 	public List<String> getAbsoluteIncludePaths() {
 		return this.parser.getIncludePaths(); 
 	}
-	
-	public String getPath() {
-		return path;
-	}
-	
 }

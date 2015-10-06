@@ -26,7 +26,7 @@ public class ModuleInfParser {
 	public ModuleInfParser(Edk2Module module){
 		this.module = module;
 		try {
-			fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(module.getPath())));
+			fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(module.getElementPath())));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

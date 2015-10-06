@@ -74,7 +74,7 @@ public class NewModuleProjectWizard extends Wizard implements INewWizard, IRunna
 			
 			Edk2ModuleProjectCreator.ConfigureProjectNature(newProjectHandle);
 			Edk2ModuleProjectCreator.CreateProjectStructure(newProjectHandle, new Path(newModuleWizardPage.getLocation()).removeLastSegments(1).toString());
-			Edk2Package edk2Package = new Edk2Package("/home/felipe/dev/repos/git/edk2", "/home/felipe/dev/repos/git/edk2/MdePkg/MdePkg.dec");
+			Edk2Package edk2Package = new Edk2Package("/home/felipe/dev/repos/git/edk2/MdePkg/MdePkg.dec", "/home/felipe/dev/repos/git/edk2");
 			
 			new ProjectSettingsManager(newProjectHandle).setIncludePaths(edk2Package.getAbsoluteIncludePaths());
 			ProjectBuildConfigManager.setEDK2BuildCommands(newProjectHandle, null);

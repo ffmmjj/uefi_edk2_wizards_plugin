@@ -21,7 +21,7 @@ public class PackageDecParser {
 		this.edk2Package = p;
 		
 		try {
-			fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(edk2Package.getPath())));
+			fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(edk2Package.getElementPath())));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -39,7 +39,7 @@ public class PackageDecParser {
 	private List<String> extractPackageIncludePaths() {
 		String line;
 		boolean includesSectionFound = false;
-		IPath packageBasePath = new Path(this.edk2Package.getPath()).removeLastSegments(1);
+		IPath packageBasePath = new Path(this.edk2Package.getElementPath()).removeLastSegments(1);
 		List<String> foundPaths = new LinkedList<String>();
 		
 		try {

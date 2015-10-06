@@ -85,16 +85,16 @@ public class ProjectCreator {
      */
     private static void addToProjectStructure(IProject newProject, List<Edk2Module> modules) {
         for (Edk2Module module : modules) {
-        	IFolder srcFolder = newProject.getFolder(module.getPath().substring(0, module.getPath().lastIndexOf('/')));
+        	IFolder srcFolder = newProject.getFolder(module.getElementPath().substring(0, module.getElementPath().lastIndexOf('/')));
         	try {
 				createFolder(srcFolder);
 			         	
 				IFile infFile  = srcFolder.getFile(module.getName() + ".inf");
             //	IFolder etcFolders = newProject.getFolder(module.getPath());
-				System.out.println(newProject.getLocation() + module.getPath());
-				System.out.println(module.getPath());
+				System.out.println(newProject.getLocation() + module.getElementPath());
+				System.out.println(module.getElementPath());
 				String edk2Location = "/home/felipe/dev/edk2stub/";
-				infFile.createLink(new Path(edk2Location + module.getPath()), IResource.VIRTUAL, null);
+				infFile.createLink(new Path(edk2Location + module.getElementPath()), IResource.VIRTUAL, null);
 			} catch (CoreException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
