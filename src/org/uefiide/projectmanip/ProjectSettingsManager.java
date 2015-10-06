@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.settings.model.CIncludePathEntry;
@@ -14,6 +15,7 @@ import org.eclipse.cdt.core.settings.model.ICSettingEntry;
 import org.eclipse.cdt.core.settings.model.extension.CConfigurationData;
 import org.eclipse.cdt.core.settings.model.extension.CFolderData;
 import org.eclipse.cdt.core.settings.model.extension.CLanguageData;
+import org.eclipse.cdt.internal.core.pdom.indexer.IndexerPreferences;
 import org.eclipse.cdt.managedbuilder.core.IConfiguration;
 import org.eclipse.cdt.managedbuilder.core.ManagedBuildManager;
 import org.eclipse.core.resources.IProject;
@@ -27,6 +29,8 @@ public class ProjectSettingsManager {
 	}
 	
 	public void setIncludePaths(List<String> includePaths) {
+		configureIndexerToIncludeAllReferencedHeaders();
+		
 		ICProjectDescription projectDescription = CoreModel.getDefault().getProjectDescription(this.project);
 		ICLanguageSettingEntry[] entries = ĩncludePathString2ICLanguageSettingEntryArray(includePaths);
 		
@@ -50,6 +54,12 @@ public class ProjectSettingsManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private void configureIndexerToIncludeAllReferencedHeaders() {
+		Properties props = IndexerPreferences.getProperties(this.project);
+		props.setProperty(IndexerPreferences.KEY_INDEX_ALL_HEADER_VERSIONS, "true");
+		IndexerPreferences.setProperties(this.project, IndexerPreferences.getScope(this.project), props);
 	}
 	
 	public List<String> getIncludePaths() {

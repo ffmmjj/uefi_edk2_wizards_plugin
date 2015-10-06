@@ -2,6 +2,7 @@ package org.uefiide.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import org.eclipse.cdt.core.CCProjectNature;
 import org.eclipse.cdt.core.CCorePlugin;
@@ -9,6 +10,7 @@ import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.settings.model.ICProjectDescription;
 import org.eclipse.cdt.core.settings.model.ICProjectDescriptionManager;
 import org.eclipse.cdt.core.settings.model.extension.CConfigurationData;
+import org.eclipse.cdt.internal.core.pdom.indexer.IndexerPreferences;
 import org.eclipse.cdt.managedbuilder.core.BuildException;
 import org.eclipse.cdt.managedbuilder.core.IBuilder;
 import org.eclipse.cdt.managedbuilder.core.ManagedBuildManager;
@@ -75,10 +77,6 @@ public class NewModuleProjectWizard extends Wizard implements INewWizard, IRunna
 			Edk2Package edk2Package = new Edk2Package("/home/felipe/dev/repos/git/edk2", "/home/felipe/dev/repos/git/edk2/MdePkg/MdePkg.dec");
 			
 			new ProjectSettingsManager(newProjectHandle).setIncludePaths(edk2Package.getAbsoluteIncludePaths());
-			/**
-			 * TODO include paths were successfully added - but the indexer policy must be changed
-			 * to include all headers, not only the ones present in the workspace.
-			 */
 			ProjectBuildConfigManager.setEDK2BuildCommands(newProjectHandle, null);
 			
 		} catch (CoreException e1) {
