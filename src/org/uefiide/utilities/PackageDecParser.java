@@ -45,11 +45,15 @@ public class PackageDecParser {
 		try {
 			while((line = fileReader.readLine()) != null) {
 				if(includesSectionFound) {
+					line = line.trim();
 					if(line.contains("[") && !line.contains("[Includes]") && !line.contains("Includes.X64]")) {
 						includesSectionFound = false;
 						continue;
 					}
-					if(line.trim().isEmpty()) {
+					if(line.isEmpty()) {
+						continue;
+					}
+					if(line.startsWith("#")) {
 						continue;
 					}
 					

@@ -56,10 +56,14 @@ public class ModuleInfParser {
 		try {
 			while((line = fileReader.readLine()) != null) {
 				if(packagesSectionFound) {
+					line = line.trim();
 					if(line.contains("[")) {
 						break;
 					}
-					if(line.trim().isEmpty()) {
+					if(line.isEmpty()) {
+						continue;
+					}
+					if(line.startsWith("#")) {
 						continue;
 					}
 					
