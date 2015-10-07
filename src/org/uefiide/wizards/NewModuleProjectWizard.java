@@ -2,6 +2,8 @@ package org.uefiide.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 import org.eclipse.cdt.core.CCProjectNature;
@@ -38,6 +40,7 @@ import org.uefiide.projectmanip.Edk2ModuleProjectCreator;
 import org.uefiide.projectmanip.ProjectBuildConfigManager;
 import org.uefiide.projectmanip.ProjectCreator;
 import org.uefiide.projectmanip.ProjectSettingsManager;
+import org.uefiide.structures.Edk2Module;
 import org.uefiide.structures.Edk2Package;
 import org.uefiide.wizards.pages.NewModuleWizardPage;
 
@@ -74,9 +77,16 @@ public class NewModuleProjectWizard extends Wizard implements INewWizard, IRunna
 			
 			Edk2ModuleProjectCreator.ConfigureProjectNature(newProjectHandle);
 			Edk2ModuleProjectCreator.CreateProjectStructure(newProjectHandle, new Path(newModuleWizardPage.getLocation()).removeLastSegments(1).toString());
-			Edk2Package edk2Package = new Edk2Package("/home/felipe/dev/repos/git/edk2/MdePkg/MdePkg.dec", "/home/felipe/dev/repos/git/edk2");
+			List<Edk2Package> modulePackages = new Edk2Module(newModuleWizardPage.getLocation()).getPackages();
 			
-			new ProjectSettingsManager(newProjectHandle).setIncludePaths(edk2Package.getAbsoluteIncludePaths());
+			List<String> includePaths = new LinkedList<String>();
+			for(Edk2Package p : modulePackages) {
+				includePaths.addAll(p.getAbsoluteIncludePaths());
+			}
+			//Edk2Package edk2Package = new Edk2Package("/home/felipe/dev/repos/git/edk2/MdePkg/MdePkg.dec");
+			//new ProjectSettingsManager(newProjectHandle).setIncludePaths(edk2Package.getAbsoluteIncludePaths());
+			new ProjectSettingsManager(newProjectHandle).setIncludePaths(includePaths);
+			
 			ProjectBuildConfigManager.setEDK2BuildCommands(newProjectHandle, null);
 			
 		} catch (CoreException e1) {

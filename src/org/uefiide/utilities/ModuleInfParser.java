@@ -40,11 +40,11 @@ public class ModuleInfParser {
 		return this.name;
 	}
 	
-	public Iterator<Edk2Package> getModulePackages() {
+	public List<Edk2Package> getModulePackages() {
 		if(this.packages == null) {
 			this.packages = extractModulePackages();
 		}
-		return this.packages.iterator();
+		return this.packages;
 	}
 
 	private List<Edk2Package> extractModulePackages() {
@@ -59,9 +59,12 @@ public class ModuleInfParser {
 					if(line.contains("[")) {
 						break;
 					}
+					if(line.trim().isEmpty()) {
+						continue;
+					}
 					
 					IPath packagePath = new Path(workspacePath.append(line.trim()).toString());
-					foundPackages.add(new Edk2Package(workspacePath.toString(), packagePath.toString()));
+					foundPackages.add(new Edk2Package(packagePath.toString(), workspacePath.toString()));
 				} else if(line.contains("[Packages]")) {
 					packagesSectionFound = true;
 				}  

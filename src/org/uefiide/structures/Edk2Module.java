@@ -1,6 +1,6 @@
 package org.uefiide.structures;
 
-import java.util.Iterator;
+import java.util.List;
 
 import org.uefiide.utilities.ModuleInfParser;
 
@@ -21,7 +21,7 @@ public class Edk2Module extends Edk2Element {
 		return this.parser.getModuleName();
 	}
 	
-	public Iterator<Edk2Package> getPackages() {
+	public List<Edk2Package> getPackages() {
 		return this.parser.getModulePackages();
 	}
 }

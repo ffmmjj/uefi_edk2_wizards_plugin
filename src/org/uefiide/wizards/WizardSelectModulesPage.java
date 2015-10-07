@@ -19,9 +19,9 @@ public class WizardSelectModulesPage extends WizardPage {
 	@Override
 	public void createControl(Composite parent) {
 		List<Edk2Module> modules = new ArrayList<>();
-		modules.add(new Edk2Module("AppPkg/Applications/Hello/Hello.inf", ""));
-		modules.add(new Edk2Module("MdePkg/Library/UefiBaseLib/UefiBaseLib.inf", ""));
-		modules.add(new Edk2Module("MdeModulePkg/Universal/Bus/UsbDriver/UsbDriver.inf", ""));
+		modules.add(new Edk2Module("AppPkg/Applications/Hello/Hello.inf"));
+		modules.add(new Edk2Module("MdePkg/Library/UefiBaseLib/UefiBaseLib.inf"));
+		modules.add(new Edk2Module("MdeModulePkg/Universal/Bus/UsbDriver/UsbDriver.inf"));
 		
 		pageComposite = new ModulesSelectionComposite(parent, SWT.NULL, modules);
 		setControl(pageComposite);

@@ -1,5 +1,11 @@
 package org.uefiide.structures;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+
 public class Edk2Element {
 	private String elementPath;
 	private String workspacePath;
@@ -15,9 +21,16 @@ public class Edk2Element {
 		if(elementPath == null || elementPath.isEmpty()) {
 			throw new IllegalArgumentException("The EDK2 element path cannot be null or empty");
 		}
+		if(!(new File(elementPath).exists())) {
+			throw new IllegalArgumentException("The path \"" + elementPath + "\" of the EDK2 element could not be found");
+		}
+		IPath baseToolsPath = new Path(workspacePath).append("BaseTools");
+		if(!(new File(baseToolsPath.toString()).exists())) {
+			throw new IllegalArgumentException("The path \"" + workspacePath + "\" does not contain the BaseTools folder");
+		}
 		
-		this.workspacePath = workspacePath;
 		this.elementPath = elementPath;
+		this.workspacePath = workspacePath;
 	}
 	
 	public String getWorkspacePath() {
@@ -29,6 +42,17 @@ public class Edk2Element {
 	}
 	
 	private static String inferWorkspaceFromElementPath(String elementPath) {
-		return null;
+		IPath currentDir = new Path(elementPath);
+		while(!currentDir.isEmpty()) {
+			IPath tentativeBaseTools = currentDir.append("BaseTools");
+			File baseToolsDir = new File(tentativeBaseTools.toString());
+			if(baseToolsDir.exists()) {
+				return currentDir.toString();
+			}
+			
+			currentDir = currentDir.removeLastSegments(1);
+		}
+		
+		throw new IllegalArgumentException("The workspace cannot be inferred from this element path");
 	}
 }
