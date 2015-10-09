@@ -10,14 +10,6 @@
       </category>
       <wizard
             category="UefiIde.category.wizards"
-            class="org.uefiide.wizards.NewProjectWizard"
-            finalPerspective="org.eclipse.cdt.ui.CPerspective"
-            id="UefIde.wizards.new.project"
-            name="New EDK2 Project Wizard"
-            project="true">
-      </wizard>
-      <wizard
-            category="UefiIde.category.wizards"
             class="org.uefiide.wizards.NewModuleProjectWizard"
             finalPerspective="org.eclipse.cdt.ui.CPerspective"
             id="UefIde.wizards.new.module"
