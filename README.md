@@ -5,7 +5,7 @@ This is a work in progress, so feel free to suggest new features and let me know
 
 # A tour
 
-[![UEFI EDK2 Wizards plugin tour](http://img.youtube.com/vi/kTRRgPIXGgM/0.jpg)](https://www.youtube.com/watch?v=kTRRgPIXGgM)
+[![UEFI EDK2 Wizards plugin tour](http://img.youtube.com/vi/ELqV1xDdPkw/0.jpg)](https://www.youtube.com/watch?v=ELqV1xDdPkw)
 
 # Eclipse Update site
  The zipped update site for this Eclipse plugin can be downloaded from [here](https://dl.dropboxusercontent.com/u/4482867/edk2tools_update_site.zip).
