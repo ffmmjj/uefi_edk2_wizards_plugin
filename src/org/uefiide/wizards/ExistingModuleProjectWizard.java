@@ -77,7 +77,12 @@ public class ExistingModuleProjectWizard extends Wizard implements INewWizard, I
 			
 			Edk2ModuleProjectCreator.ConfigureProjectNature(newProjectHandle);
 			Edk2ModuleProjectCreator.CreateProjectStructure(newProjectHandle, new Path(existingModuleWizardPage.getLocation()).removeLastSegments(1).toString());
-			List<Edk2Package> modulePackages = new Edk2Module(existingModuleWizardPage.getLocation()).getPackages();
+			List<Edk2Package> modulePackages;
+			if(existingModuleWizardPage.shouldInferWorkspacePath()) {
+				modulePackages = new Edk2Module(existingModuleWizardPage.getLocation()).getPackages();
+			} else {
+				modulePackages = new Edk2Module(existingModuleWizardPage.getLocation(), existingModuleWizardPage.getWorkspacePath()).getPackages();
+			}
 			
 			List<String> includePaths = new LinkedList<String>();
 			for(Edk2Package p : modulePackages) {

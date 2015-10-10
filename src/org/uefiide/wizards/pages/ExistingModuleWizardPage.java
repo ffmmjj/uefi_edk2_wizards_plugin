@@ -51,9 +51,9 @@ public class ExistingModuleWizardPage extends WizardPage {
 			@Override
 		    public void widgetSelected(SelectionEvent e)
 		    {
-				ExistingModuleWizardPage.this.workspacePathLabel.setEnabled(!detectWorkspaceFromModuleBtn.getSelection());
-				ExistingModuleWizardPage.this.workspacePath.setEnabled(!detectWorkspaceFromModuleBtn.getSelection());
-				ExistingModuleWizardPage.this.workspacePathBtn.setEnabled(!detectWorkspaceFromModuleBtn.getSelection());
+				ExistingModuleWizardPage.this.workspacePathLabel.setEnabled(!shouldInferWorkspacePath());
+				ExistingModuleWizardPage.this.workspacePath.setEnabled(!shouldInferWorkspacePath());
+				ExistingModuleWizardPage.this.workspacePathBtn.setEnabled(!shouldInferWorkspacePath());
 		    }
 		});
 		
@@ -88,7 +88,30 @@ public class ExistingModuleWizardPage extends WizardPage {
 				FileDialog fileDialog = new FileDialog(infBrowserBtn.getShell());
 				fileDialog.setText("Select the parent directory for project");
 				String path = fileDialog.open();
-				infLocationPath.setText(path);
+				if(path != null) {
+					infLocationPath.setText(path);
+				}
+			}
+
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+
+			}
+		});
+		workspacePathBtn.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseDown(MouseEvent e) {
+				DirectoryDialog dirDialog = new DirectoryDialog(workspacePathBtn.getShell());
+				dirDialog.setText("Select the EDK2 workspace directory");
+				String path = dirDialog.open();
+				if(path != null) {
+					workspacePath.setText(path);
+				}
 			}
 
 			@Override
@@ -105,5 +128,12 @@ public class ExistingModuleWizardPage extends WizardPage {
 	public String getLocation(){
 		return infLocationPath.getText();
 	}
-
+	
+	public boolean shouldInferWorkspacePath() {
+		return this.detectWorkspaceFromModuleBtn.getSelection();
+	}
+	
+	public String getWorkspacePath() {
+		return this.workspacePath.getText();
+	}
 }
