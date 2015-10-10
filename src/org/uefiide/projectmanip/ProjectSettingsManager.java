@@ -1,9 +1,7 @@
 package org.uefiide.projectmanip;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.eclipse.cdt.core.model.CoreModel;
@@ -28,10 +26,10 @@ public class ProjectSettingsManager {
 		this.project = project;		
 	}
 	
-	public void setIncludePaths(List<String> includePaths) {
-		configureIndexerToIncludeAllReferencedHeaders();
+	public static void setIncludePaths(IProject project, List<String> includePaths) {
+		configureIndexerToIncludeAllReferencedHeaders(project);
 		
-		ICProjectDescription projectDescription = CoreModel.getDefault().getProjectDescription(this.project);
+		ICProjectDescription projectDescription = CoreModel.getDefault().getProjectDescription(project);
 		ICLanguageSettingEntry[] entries = ĩncludePathString2ICLanguageSettingEntryArray(includePaths);
 		
 		// Set include paths for all configurations in the CDT project
@@ -56,35 +54,13 @@ public class ProjectSettingsManager {
 		}
 	}
 
-	private void configureIndexerToIncludeAllReferencedHeaders() {
-		Properties props = IndexerPreferences.getProperties(this.project);
+	private static void configureIndexerToIncludeAllReferencedHeaders(IProject project) {
+		Properties props = IndexerPreferences.getProperties(project);
 		props.setProperty(IndexerPreferences.KEY_INDEX_ALL_HEADER_VERSIONS, "true");
-		IndexerPreferences.setProperties(this.project, IndexerPreferences.getScope(this.project), props);
+		IndexerPreferences.setProperties(project, IndexerPreferences.getScope(project), props);
 	}
 	
-	public List<String> getIncludePaths() {
-		List<String> includePaths = new ArrayList<>();
-		
-		ICProjectDescription projectDescription = CoreModel.getDefault().getProjectDescription(this.project);
-		IConfiguration configuration =
-	            ManagedBuildManager.getConfigurationForDescription(projectDescription
-	                                        .getActiveConfiguration());
-		ICLanguageSettingEntry[] includePathEntries = null ;
-		CConfigurationData Cconfigdata = configuration.getConfigurationData();
-        CFolderData rootFolderData = Cconfigdata.getRootFolderData();
-        CLanguageData[] languageDatas = rootFolderData.getLanguageDatas();
-        
-        for(CLanguageData languageData : languageDatas) {
-        	includePathEntries =languageData.getEntries(ICLanguageSettingEntry.INCLUDE_PATH);
-        	for(ICLanguageSettingEntry pathEntry : includePathEntries) {
-        		includePaths.add(pathEntry.getValue());
-        	}
-        }
-        
-		return includePaths;
-	}
-	
-	private ICLanguageSettingEntry[] ĩncludePathString2ICLanguageSettingEntryArray(List<String> paths) {
+	private static ICLanguageSettingEntry[] ĩncludePathString2ICLanguageSettingEntryArray(List<String> paths) {
 		List<ICLanguageSettingEntry> entries = new ArrayList<>();
 		ICLanguageSettingEntry[] entriesArray = new ICLanguageSettingEntry[paths.size()];
 		

@@ -85,7 +85,7 @@ public class ExistingModuleProjectWizard extends Wizard implements INewWizard, I
 			}
 			//Edk2Package edk2Package = new Edk2Package("/home/felipe/dev/repos/git/edk2/MdePkg/MdePkg.dec");
 			//new ProjectSettingsManager(newProjectHandle).setIncludePaths(edk2Package.getAbsoluteIncludePaths());
-			new ProjectSettingsManager(newProjectHandle).setIncludePaths(includePaths);
+			ProjectSettingsManager.setIncludePaths(newProjectHandle, includePaths);
 			
 			ProjectBuildConfigManager.setEDK2BuildCommands(newProjectHandle, null);
 			
