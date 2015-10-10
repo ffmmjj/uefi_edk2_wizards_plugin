@@ -8,12 +8,12 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.widgets.*;
 
-public class NewModuleWizardPage extends WizardPage {
+public class ExistingModuleWizardPage extends WizardPage {
 	private Button browse;
 	private Text prjName;
 	private Text locTxt;
 
-	public NewModuleWizardPage(String pageName) {
+	public ExistingModuleWizardPage(String pageName) {
 		super(pageName);
 		setTitle(pageName);
 		setDescription("Opens an EDK2 module project");

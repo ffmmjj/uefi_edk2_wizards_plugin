@@ -6,14 +6,14 @@
          point="org.eclipse.ui.newWizards">
       <category
             id="UefiIde.category.wizards"
-            name="UefiIde Wizards">
+            name="Uefi EDK2 Tools">
       </category>
       <wizard
             category="UefiIde.category.wizards"
-            class="org.uefiide.wizards.NewModuleProjectWizard"
+            class="org.uefiide.wizards.ExistingModuleProjectWizard"
             finalPerspective="org.eclipse.cdt.ui.CPerspective"
             id="UefIde.wizards.new.module"
-            name="New EDK2 Module Wizard"
+            name="Existing EDK2 Module Wizard"
             project="true">
       </wizard>
    </extension>

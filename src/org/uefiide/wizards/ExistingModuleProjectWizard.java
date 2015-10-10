@@ -42,42 +42,42 @@ import org.uefiide.projectmanip.ProjectCreator;
 import org.uefiide.projectmanip.ProjectSettingsManager;
 import org.uefiide.structures.Edk2Module;
 import org.uefiide.structures.Edk2Package;
-import org.uefiide.wizards.pages.NewModuleWizardPage;
+import org.uefiide.wizards.pages.ExistingModuleWizardPage;
 
-public class NewModuleProjectWizard extends Wizard implements INewWizard, IRunnableWithProgress {
+public class ExistingModuleProjectWizard extends Wizard implements INewWizard, IRunnableWithProgress {
 
-	private NewModuleWizardPage newModuleWizardPage;
+	private ExistingModuleWizardPage existingModuleWizardPage;
 
-	public NewModuleProjectWizard() {
+	public ExistingModuleProjectWizard() {
 		super();
 	}
 
 	public void addPages() {
 		super.addPages();
-		this.newModuleWizardPage = new NewModuleWizardPage("New EDK2 Module Project");
-		addPage(newModuleWizardPage);
+		this.existingModuleWizardPage = new ExistingModuleWizardPage("Existing EDK2 Module Project");
+		addPage(existingModuleWizardPage);
 	}
 
 	@Override
 	public void run(IProgressMonitor arg0) throws InvocationTargetException, InterruptedException {
 		IWorkspaceRoot wrkSpaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		IPath newProjectPath = new Path(wrkSpaceRoot.getLocation().append(newModuleWizardPage.getProjName()).toString());
-		IProject newProjectHandle = wrkSpaceRoot.getProject(newModuleWizardPage.getProjName());
+		IPath newProjectPath = new Path(wrkSpaceRoot.getLocation().append(existingModuleWizardPage.getProjName()).toString());
+		IProject newProjectHandle = wrkSpaceRoot.getProject(existingModuleWizardPage.getProjName());
 		
-		arg0.beginTask("creating EDK2 module project", 10);
+		arg0.beginTask("Creating Existing EDK2 module project", 10);
 				 
 		IProjectDescription projDesc;
 		try {
 			newProjectHandle.create(arg0);
 			newProjectHandle.open(arg0);
-			projDesc = ResourcesPlugin.getWorkspace().newProjectDescription(newModuleWizardPage.getProjName());
+			projDesc = ResourcesPlugin.getWorkspace().newProjectDescription(existingModuleWizardPage.getProjName());
 			projDesc.setLocation(newProjectPath);
 			
 			CCorePlugin.getDefault().createCDTProject(projDesc, newProjectHandle, null);
 			
 			Edk2ModuleProjectCreator.ConfigureProjectNature(newProjectHandle);
-			Edk2ModuleProjectCreator.CreateProjectStructure(newProjectHandle, new Path(newModuleWizardPage.getLocation()).removeLastSegments(1).toString());
-			List<Edk2Package> modulePackages = new Edk2Module(newModuleWizardPage.getLocation()).getPackages();
+			Edk2ModuleProjectCreator.CreateProjectStructure(newProjectHandle, new Path(existingModuleWizardPage.getLocation()).removeLastSegments(1).toString());
+			List<Edk2Package> modulePackages = new Edk2Module(existingModuleWizardPage.getLocation()).getPackages();
 			
 			List<String> includePaths = new LinkedList<String>();
 			for(Edk2Package p : modulePackages) {
