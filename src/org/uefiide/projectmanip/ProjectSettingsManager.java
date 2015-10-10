@@ -37,8 +37,6 @@ public class ProjectSettingsManager {
 			IConfiguration configuration = ManagedBuildManager.getConfigurationForDescription(confDesc);
 			CConfigurationData Cconfigdata = configuration.getConfigurationData();
 	        CFolderData rootFolderData = Cconfigdata.getRootFolderData();
-	        //configuration.setBuildCommand("build2");   // This sets the build command!
-	        //configuration.setBuildArguments("-t GCC47 -a X64 -p AppPkg/AppPkg.dsc -m AppPkg/Applications/Hello/Hello.inf"); // This sets the build command arguments!
 	        CLanguageData[] languageDatas = rootFolderData.getLanguageDatas();
 	        
 	        for(CLanguageData languageData : languageDatas) {

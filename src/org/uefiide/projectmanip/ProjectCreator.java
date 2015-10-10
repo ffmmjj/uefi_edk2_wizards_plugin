@@ -32,13 +32,9 @@ public class ProjectCreator {
 		
 		CProjectNature.addCNature(newEdk2Project, null);
 		
-		AddCProjectNatureToProject(newEdk2Project);
-		
 		return newEdk2Project;
 	}
 	
-	
-
 	private static IProject createBaseProject(String projectName, URI location) {
         // it is acceptable to use the ResourcesPlugin class
         IProject newProject = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
@@ -71,7 +67,6 @@ public class ProjectCreator {
         }
         if (!folder.exists()) {
         	folder.create(IResource.VIRTUAL, false, null);
-            //folder.create(false, false, null);
         }
     }
  
@@ -90,7 +85,6 @@ public class ProjectCreator {
 				createFolder(srcFolder);
 			         	
 				IFile infFile  = srcFolder.getFile(module.getName() + ".inf");
-            //	IFolder etcFolders = newProject.getFolder(module.getPath());
 				System.out.println(newProject.getLocation() + module.getElementPath());
 				System.out.println(module.getElementPath());
 				String edk2Location = "/home/felipe/dev/edk2stub/";
@@ -101,38 +95,4 @@ public class ProjectCreator {
 			}
         }
     }
-    
-public static void AddCProjectNatureToProject(IProject newEdk2Project) throws CoreException, BuildException {
-		
-		
-		/*
-		ICProjectDescription des = CoreModel.getDefault().createProjectDescription(newEdk2Project, false);
-
-		// create build info and managed project
-		ManagedBuildInfo buildInfo = ManagedBuildManager.createBuildInfo(newEdk2Project);
-		// NullPointerException here, getManagedProject must probably only be called after createManagedProject()
-		IConfiguration[] cfgs = buildInfo.getManagedProject().getConfigurations(); 
-		IConfiguration cfg = cfgs[0];
-		IManagedProject mProj = ManagedBuildManager.createManagedProject(newEdk2Project, cfg.getProjectType());
-
-		for (IConfiguration icf : cfgs) {
-		    String id = ManagedBuildManager.calculateChildId(icf.getId(), null);
-
-		    // clone the configuration and set the artifact name
-		    IConfiguration config = mProj.createConfiguration(icf, id);
-		    config.setArtifactName("${ProjName}");
-
-		    // creates/add the configuration to the project description
-		    des.createConfiguration(ManagedBuildManager.CFG_DATA_PROVIDER_ID, config.getConfigurationData());
-
-		    // set the builder to "managed" mode
-		    IBuilder bld = config.getEditableBuilder();
-		    if (bld != null) {
-		        bld.setManagedBuildOn(true);
-		    }
-		}
-
-		CoreModel.getDefault().setProjectDescription(newEdk2Project, des);
-		*/
-	}
 }

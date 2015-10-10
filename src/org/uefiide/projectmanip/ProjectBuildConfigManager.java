@@ -19,18 +19,6 @@ import org.uefiide.structures.Edk2Module;
 public class ProjectBuildConfigManager {
 	
 	public static void setEDK2BuildCommands(IProject project, Edk2Module edk2Module) {
-		/*
-		ICProjectDescription projDesc = CCorePlugin.getDefault().getProjectDescription(project, true);
-		IConfiguration cfg = ManagedBuildManager.getConfigurationForDescription(projDesc.getActiveConfiguration());
-		IBuilder builder = cfg.getBuilder();
-		try {
-			builder.setBuildArguments("-p AppPkg/AppPkg.dsc");
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
-		
 		ICProjectDescription projectDescription = CoreModel.getDefault().getProjectDescription(project);
 		
 		// Set include paths for all configurations in the CDT project
@@ -41,15 +29,10 @@ public class ProjectBuildConfigManager {
 			StorableEnvironment vars = fUserSupplier.getWorkspaceEnvironmentCopy();
 	        CFolderData rootFolderData = Cconfigdata.getRootFolderData();
 	        configuration.setBuildCommand("build");   // This sets the build command!
+	        // TODO remove this hardcoded build command to retrieve the necessary information from the module.
 	        configuration.setBuildArguments("-t GCC47 -a X64 -p AppPkg/AppPkg.dsc -m AppPkg/Applications/Hello/Hello.inf"); // This sets the build command arguments!
 	        
 	        vars.createVariable("WORKSPACE", "/home/felipe/dev/repos/git/edk2", IEnvironmentVariable.ENVVAR_APPEND,  ":");
-	        
-	        /*
-	        CLanguageData[] languageDatas = rootFolderData.getLanguageDatas();
-	        for(CLanguageData languageData : languageDatas) {
-	        	languageData.setEntries(ICLanguageSettingEntry.INCLUDE_PATH, entries);
-	        }*/
 		}
 		
 		try {
@@ -58,9 +41,5 @@ public class ProjectBuildConfigManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	/**
-	 * org.eclipse.cdt.managedbuilder.core.IBuilder shall be used to set the build command which invokes
-	 * "build" from EDK2.
-	 */
 	}
 }
