@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>UefiIde</name>
+	<name>eclipse_uefi_edk2_tools_wizards_plugin</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -25,11 +25,4 @@
 		<nature>org.eclipse.pde.PluginNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>lib_src</name>
-			<type>2</type>
-			<location>/home/felipe/dev/eclipse_rcp_workspace/uefi-ide-utilities/src</location>
-		</link>
-	</linkedResources>
 </projectDescription>
