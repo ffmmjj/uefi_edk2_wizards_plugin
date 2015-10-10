@@ -20,7 +20,7 @@ This is a work in progress, so feel free to suggest new features and let me know
     - ~~Import .inf file;~~
     - ~~Populate project sources in Project Explorer view;~~
     - ~~Add include paths extracted from the .dec files referenced in the module's .inf file;~~
-    - Add custom workspace path to the project wizard;
+    - ~~Add custom workspace path to the project wizard;~~
     - Add build steps to the new project;
   - New EDK2 Module project wizard:
     - Initial setup page(Module name, module type, referenced packages(.dec), consumed library classes, protocols and GUIDs);
