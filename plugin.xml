@@ -31,5 +31,22 @@
             restorable="true">
       </view>
    </extension>
+   <extension point="org.eclipse.ui.menus">
+       <menuContribution
+             locationURI="popup:common.new.menu?after=new">
+             <command
+                   commandId="UefiIde.menuentries.new.EDK2Source"
+                   label="New EDK2 Module source file" style="push">
+             </command>
+       </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+         <command
+               id="UefiIde.menuentries.new.EDK2Source"
+               defaultHandler="org.uefiide.handlers.NewEdk2SourceHandler"
+               name="New EDK2 Module Source file handler">
+         </command>
+   </extension>
 
 </plugin>
