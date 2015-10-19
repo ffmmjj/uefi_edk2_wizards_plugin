@@ -1,6 +1,7 @@
 package org.uefiide.wizards;
 
 import org.eclipse.jface.wizard.Wizard;
+import org.uefiide.wizards.pages.NewEdk2ModuleFileWizardpage;
 
 public class NewEdk2ModuleFileWizard extends Wizard {
 	NewEdk2ModuleFileWizardpage page;

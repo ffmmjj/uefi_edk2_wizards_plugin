@@ -1,4 +1,4 @@
-package org.uefiide.wizards;
+package org.uefiide.wizards.pages;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;

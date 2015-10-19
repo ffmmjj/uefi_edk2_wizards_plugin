@@ -11,6 +11,7 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.uefiide.projectmanip.ProjectCreator;
+import org.uefiide.wizards.pages.WizardSelectModulesPage;
 
 /**
  * 

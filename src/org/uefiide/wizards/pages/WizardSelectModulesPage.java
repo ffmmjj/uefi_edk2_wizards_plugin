@@ -1,4 +1,4 @@
-package org.uefiide.wizards;
+package org.uefiide.wizards.pages;
 
 import java.util.ArrayList;
 import java.util.List;
