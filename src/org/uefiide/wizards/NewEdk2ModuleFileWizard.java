@@ -19,6 +19,8 @@ public class NewEdk2ModuleFileWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
+		String newFileLocation = this.page.getNewFileLocation();
+		String newFileName = this.page.getNewFileName();
 		return false;
 	}
 
