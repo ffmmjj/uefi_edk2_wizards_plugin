@@ -1,5 +1,9 @@
 package org.uefiide.wizards.pages;
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
@@ -10,16 +14,20 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.dialogs.ContainerSelectionDialog;
+import org.eclipse.ui.dialogs.ResourceListSelectionDialog;
 
 public class NewEdk2ModuleFileWizardpage extends WizardPage {
 	private Text dirLocation;
 	private Text sourceName;
+	private IProject project;
 	
 	/**
 	 * Create the wizard.
 	 */
-	public NewEdk2ModuleFileWizardpage() {
+	public NewEdk2ModuleFileWizardpage(IProject project) {
 		super("wizardPage");
+		this.project = project;
 		setTitle("Wizard Page title");
 		setDescription("Wizard Page description");
 	}
@@ -50,11 +58,15 @@ public class NewEdk2ModuleFileWizardpage extends WizardPage {
 
 			@Override
 			public void mouseDown(MouseEvent e) {
-				DirectoryDialog fileDialog = new DirectoryDialog(dirLocationBtn.getShell());
-				fileDialog.setText("Select the parent directory for project");
-				String path = fileDialog.open();
-				if(path != null) {
-					dirLocation.setText(path);
+				ContainerSelectionDialog rdialog = new ContainerSelectionDialog(
+						dirLocationBtn.getShell(),
+						project.getWorkspace().getRoot(),
+						false, 
+						"Choose the folder for the new EDK2 Module file"
+						);
+				if(rdialog.open() == ContainerSelectionDialog.OK) {
+					Path selectedFolder = (Path)rdialog.getResult()[0];
+					dirLocation.setText(selectedFolder.toString());
 				}
 			}
 

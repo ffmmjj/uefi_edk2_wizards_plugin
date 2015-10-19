@@ -22,7 +22,7 @@ public class NewEdk2ModuleFileWizard extends Wizard {
 	@Override
 	public void addPages() {
 		super.addPages();
-		this.page = new NewEdk2ModuleFileWizardpage();
+		this.page = new NewEdk2ModuleFileWizardpage(this.project);
 		addPage(page);
 	}
 
