@@ -5,6 +5,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.IHandlerListener;
 import org.eclipse.core.internal.resources.Project;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -32,7 +33,8 @@ public class NewEdk2SourceHandler implements IHandler {
 	    ISelection sel = HandlerUtil.getActiveMenuSelection(event);
 	    IStructuredSelection selection = (IStructuredSelection) sel;
 	    
-	    NewEdk2ModuleFileWizard wizard = new NewEdk2ModuleFileWizard();
+	    
+	    NewEdk2ModuleFileWizard wizard = new NewEdk2ModuleFileWizard((IProject)selection.getFirstElement());
 	    WizardDialog dialog = new WizardDialog(shell, wizard);
 	    dialog.create();
 	    dialog.open();
