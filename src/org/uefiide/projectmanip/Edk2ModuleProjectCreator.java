@@ -58,7 +58,7 @@ public class Edk2ModuleProjectCreator {
 			IContainer srcFolder;
 			if(node != null && !node.isEmpty()) {
 				IFolder nodeFolder = parentFolder.getFolder(new Path(node));
-				nodeFolder.create(IResource.VIRTUAL, false, null);
+				nodeFolder.createLink(new Path(location).append(node), IResource.VIRTUAL, null);
 				srcFolder = nodeFolder;
 			} else {
 				srcFolder = parentFolder;
@@ -72,7 +72,9 @@ public class Edk2ModuleProjectCreator {
 			}
 		} else if(nodeFile.isFile()) {
 			IFile infFile  = parentFolder.getFile(new Path(node));
-			infFile.createLink(new Path(location).append(node), IResource.VIRTUAL, null);
+			if(!infFile.exists()) {
+				infFile.createLink(new Path(location).append(node), IResource.VIRTUAL, null);
+			}
 		}
 	}
 }

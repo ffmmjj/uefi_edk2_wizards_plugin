@@ -3,6 +3,7 @@ package org.uefiide.wizards.pages;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -67,6 +68,10 @@ public class NewEdk2ModuleFileWizardpage extends WizardPage {
 				if(rdialog.open() == ContainerSelectionDialog.OK) {
 					Path selectedFolder = (Path)rdialog.getResult()[0];
 					dirLocation.setText(selectedFolder.toString());
+					
+					IFolder folder = project.getFolder(selectedFolder.removeFirstSegments(1));
+					IPath folderLocation = folder.getLocation();
+					folderLocation.toString();
 				}
 			}
 
