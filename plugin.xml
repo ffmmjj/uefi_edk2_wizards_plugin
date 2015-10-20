@@ -17,20 +17,6 @@
             project="true">
       </wizard>
    </extension>
-   <extension
-         point="org.eclipse.ui.views">
-      <category
-            id="customedk2modulenavigator.category"
-            name="EDK2 Module Projects">
-      </category>
-      <view
-            category="customedk2modulenavigator.category"
-            class="org.uefiide.views.Edk2ModuleView"
-            id="eclipse_uefi_edk2_tools_wizards_plugin.moduleview"
-            name="EDK2 Module View"
-            restorable="true">
-      </view>
-   </extension>
    <extension point="org.eclipse.ui.menus">
        <menuContribution
              locationURI="popup:common.new.menu?after=new">

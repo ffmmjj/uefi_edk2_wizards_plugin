@@ -92,8 +92,6 @@ public class ExistingModuleProjectWizard extends Wizard implements INewWizard, I
 			ProjectSettingsManager.setIncludePaths(newProjectHandle, includePaths);
 			
 			ProjectBuildConfigManager.setEDK2BuildCommands(newProjectHandle, null);
-			
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("eclipse_uefi_edk2_tools_wizards_plugin.moduleview");
 		} catch (CoreException e1) {
 			e1.printStackTrace();
 		}
