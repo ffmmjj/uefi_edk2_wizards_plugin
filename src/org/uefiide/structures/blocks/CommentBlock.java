@@ -1,0 +1,27 @@
+package org.uefiide.structures.blocks;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+public class CommentBlock implements Edk2ElementBlock{
+	public List<String> lines = new LinkedList<String>();
+	
+	public CommentBlock() {
+		
+	}
+	
+	public void addLine(String sourceFileName) {
+		this.lines.add(sourceFileName);
+	}
+	
+	public List<String> getLines() {
+		return this.lines;
+	}
+	
+	@Override
+	public String toString() {
+		throw new NotImplementedException();
+	}
+}
