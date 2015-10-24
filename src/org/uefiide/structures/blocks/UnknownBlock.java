@@ -12,9 +12,7 @@ public class UnknownBlock implements Edk2ElementBlock {
 		
 	}
 	
-	public void addLine(String sourceFileName) {
-		this.lines.add(sourceFileName);
-	}
+	
 	
 	public List<String> getLines() {
 		return this.lines;
@@ -23,5 +21,10 @@ public class UnknownBlock implements Edk2ElementBlock {
 	@Override
 	public String toString() {
 		throw new NotImplementedException();
+	}
+	
+	@Override
+	public void addLine(String sourceFileName) {
+		this.lines.add(sourceFileName);
 	}
 }

@@ -28,4 +28,14 @@ public class DefinitionsBlock implements Edk2ElementBlock {
 	public String toString() {
 		throw new NotImplementedException();
 	}
+
+	@Override
+	public void addLine(String line) {
+		String[] keyValuePair = line.split("=");
+		if(keyValuePair.length != 2) {
+			throw new IllegalArgumentException("Could not extract a key-value pair from the line \"" + line + "\"");
+		}
+		
+		this.addDefinition(keyValuePair[0].trim(), keyValuePair[1].trim());
+	}
 }

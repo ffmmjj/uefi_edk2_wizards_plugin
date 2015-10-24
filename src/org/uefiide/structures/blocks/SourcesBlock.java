@@ -24,4 +24,9 @@ public class SourcesBlock implements Edk2ElementBlock {
 	public String toString() {
 		throw new NotImplementedException();
 	}
+
+	@Override
+	public void addLine(String line) {
+		this.addSourceFile(line);
+	}
 }

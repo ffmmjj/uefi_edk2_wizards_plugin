@@ -24,4 +24,9 @@ public class LibraryClassesBlock implements Edk2ElementBlock {
 	public String toString() {
 		throw new NotImplementedException();
 	}
+
+	@Override
+	public void addLine(String line) {
+		this.addLibraryClass(line);
+	}
 }
