@@ -3,6 +3,8 @@ package org.uefiide.structures.blocks;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.uefiide.structures.blocks.visitors.Edk2ElementBlockVisitor;
+
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class UnknownBlock implements Edk2ElementBlock {
@@ -26,5 +28,9 @@ public class UnknownBlock implements Edk2ElementBlock {
 	@Override
 	public void addLine(String sourceFileName) {
 		this.lines.add(sourceFileName);
+	}
+
+	@Override
+	public void accept(Edk2ElementBlockVisitor visitor) {
 	}
 }

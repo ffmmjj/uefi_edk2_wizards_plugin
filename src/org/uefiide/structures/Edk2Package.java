@@ -21,4 +21,10 @@ public class Edk2Package extends Edk2Element {
 	public List<String> getAbsoluteIncludePaths() {
 		return this.parser.getIncludePaths(); 
 	}
+
+	@Override
+	public void save() {
+		// TODO Auto-generated method stub
+		
+	}
 }

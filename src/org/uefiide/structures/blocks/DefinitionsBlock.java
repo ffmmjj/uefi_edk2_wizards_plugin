@@ -2,6 +2,10 @@ package org.uefiide.structures.blocks;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import org.uefiide.structures.blocks.visitors.Edk2ElementBlockVisitor;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -24,6 +28,10 @@ public class DefinitionsBlock implements Edk2ElementBlock {
 		this.defines.remove(key);
 	}
 	
+	public Map<String, String> entries() {
+		return this.defines;
+	}
+	
 	@Override
 	public String toString() {
 		throw new NotImplementedException();
@@ -37,5 +45,10 @@ public class DefinitionsBlock implements Edk2ElementBlock {
 		}
 		
 		this.addDefinition(keyValuePair[0].trim(), keyValuePair[1].trim());
+	}
+
+	@Override
+	public void accept(Edk2ElementBlockVisitor visitor) {
+		visitor.visit(this);
 	}
 }

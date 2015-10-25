@@ -1,5 +1,7 @@
 package org.uefiide.structures.blocks;
 
+import org.uefiide.structures.blocks.visitors.Edk2ElementBlockVisitor;
+
 public class CommentBlock implements Edk2ElementBlock{
 	public String line;
 	
@@ -15,5 +17,10 @@ public class CommentBlock implements Edk2ElementBlock{
 	@Override
 	public String toString() {
 		return this.line;
+	}
+
+	@Override
+	public void accept(Edk2ElementBlockVisitor visitor) {
+		
 	}
 }

@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
-public class Edk2Element {
+public abstract class Edk2Element {
 	private String elementPath;
 	private String workspacePath;
 	
@@ -55,4 +55,6 @@ public class Edk2Element {
 		
 		throw new IllegalArgumentException("The workspace cannot be inferred from this element path");
 	}
+	
+	public abstract void save();
 }
