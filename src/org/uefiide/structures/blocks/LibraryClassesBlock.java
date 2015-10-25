@@ -28,7 +28,7 @@ public class LibraryClassesBlock implements Edk2ElementBlock {
 		
 		buffer.append("[LibraryClasses]" + System.lineSeparator());
 		for(String libraryClass : this.libraryClasses) {
-			buffer.append(libraryClass + System.lineSeparator());
+			buffer.append("  " + libraryClass + System.lineSeparator());
 		}
 		
 		return buffer.toString();

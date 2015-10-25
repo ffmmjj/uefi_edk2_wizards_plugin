@@ -32,7 +32,7 @@ public class SourcesBlock implements Edk2ElementBlock {
 		
 		buffer.append("[Sources]" + System.lineSeparator());
 		for(String source : this.sourceFiles) {
-			buffer.append(source + System.lineSeparator());
+			buffer.append("  " + source + System.lineSeparator());
 		}
 		
 		return buffer.toString();

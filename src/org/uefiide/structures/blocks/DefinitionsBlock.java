@@ -42,7 +42,7 @@ public class DefinitionsBlock implements Edk2ElementBlock {
 		
 		buffer.append("[Defines]" + System.lineSeparator());
 		for(Entry<String, String> entry : this.defines.entrySet()) {
-			buffer.append(entry.getKey() + " = " + entry.getValue() + System.lineSeparator());
+			buffer.append("  " + entry.getKey() + " = " + entry.getValue() + System.lineSeparator());
 		}
 		
 		return buffer.toString();

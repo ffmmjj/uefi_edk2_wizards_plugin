@@ -32,7 +32,7 @@ public class PackagesBlock implements Edk2ElementBlock {
 		
 		buffer.append("[Packages]" + System.lineSeparator());
 		for(String packageString : this.packages) {
-			buffer.append(packageString + System.lineSeparator());
+			buffer.append("  " + packageString + System.lineSeparator());
 		}
 		
 		return buffer.toString();
