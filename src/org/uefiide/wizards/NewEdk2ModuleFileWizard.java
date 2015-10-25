@@ -58,7 +58,8 @@ public class NewEdk2ModuleFileWizard extends Wizard {
 		
 		Edk2Module module = getProjectModule();
 		List<String> sources = module.getSources();
-		sources.add(newFileName);
+		IPath relativeFilePath = newFileLocation.getProjectRelativePath().append(newFileName);
+		sources.add(relativeFilePath.toString());
 		module.setSources(sources);
 		module.save();
 	}
@@ -71,6 +72,7 @@ public class NewEdk2ModuleFileWizard extends Wizard {
 				if(res.getName().endsWith(".inf")) {
 					module = new Edk2Module(res.getLocation().toString(), 
 							this.project.getPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "EDK2_WORKSPACE")));
+					break;
 				}
 			}
 		} catch (CoreException e) {

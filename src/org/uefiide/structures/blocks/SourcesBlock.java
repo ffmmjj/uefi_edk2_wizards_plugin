@@ -22,9 +22,20 @@ public class SourcesBlock implements Edk2ElementBlock {
 		return this.sourceFiles;
 	}
 	
+	public void setSourceFiles(List<String> sources) {
+		this.sourceFiles = sources;
+	}
+	
 	@Override
 	public String toString() {
-		throw new NotImplementedException();
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append("[Sources]" + System.lineSeparator());
+		for(String source : this.sourceFiles) {
+			buffer.append(source + System.lineSeparator());
+		}
+		
+		return buffer.toString();
 	}
 
 	@Override

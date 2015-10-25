@@ -14,15 +14,19 @@ public class UnknownBlock implements Edk2ElementBlock {
 		
 	}
 	
-	
-	
 	public List<String> getLines() {
 		return this.lines;
 	}
 	
 	@Override
 	public String toString() {
-		throw new NotImplementedException();
+		StringBuffer buffer = new StringBuffer();
+		
+		for(String line : this.lines) {
+			buffer.append(line + System.lineSeparator());
+		}
+		
+		return buffer.toString();
 	}
 	
 	@Override

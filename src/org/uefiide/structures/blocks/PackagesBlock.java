@@ -22,9 +22,20 @@ public class PackagesBlock implements Edk2ElementBlock {
 		return this.packages;
 	}
 	
+	public void setPackages(List<String> packages) {
+		this.packages = packages;
+	}
+	
 	@Override
 	public String toString() {
-		throw new NotImplementedException();
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append("[Packages]" + System.lineSeparator());
+		for(String packageString : this.packages) {
+			buffer.append(packageString + System.lineSeparator());
+		}
+		
+		return buffer.toString();
 	}
 
 	@Override

@@ -24,7 +24,14 @@ public class LibraryClassesBlock implements Edk2ElementBlock {
 	
 	@Override
 	public String toString() {
-		throw new NotImplementedException();
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append("[LibraryClasses]" + System.lineSeparator());
+		for(String libraryClass : this.libraryClasses) {
+			buffer.append(libraryClass + System.lineSeparator());
+		}
+		
+		return buffer.toString();
 	}
 
 	@Override

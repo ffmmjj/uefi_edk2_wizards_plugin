@@ -20,6 +20,10 @@ public class DefinitionsBlock implements Edk2ElementBlock {
 		return this.defines.get(key);
 	}
 	
+	public void setDefinitions(Map<String, String> definitions) {
+		this.defines = definitions;
+	}
+	
 	public void addDefinition(String key, String value) {
 		this.defines.put(key, value);
 	}
@@ -34,7 +38,14 @@ public class DefinitionsBlock implements Edk2ElementBlock {
 	
 	@Override
 	public String toString() {
-		throw new NotImplementedException();
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append("[Defines]" + System.lineSeparator());
+		for(Entry<String, String> entry : this.defines.entrySet()) {
+			buffer.append(entry.getKey() + " = " + entry.getValue() + System.lineSeparator());
+		}
+		
+		return buffer.toString();
 	}
 
 	@Override
