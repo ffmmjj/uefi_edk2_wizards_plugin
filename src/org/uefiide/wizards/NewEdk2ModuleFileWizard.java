@@ -62,6 +62,7 @@ public class NewEdk2ModuleFileWizard extends Wizard {
 		sources.add(relativeFilePath.toString());
 		module.setSources(sources);
 		module.save();
+		this.project.refreshLocal(IResource.DEPTH_INFINITE, null);
 	}
 	
 	private Edk2Module getProjectModule() {
