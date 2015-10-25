@@ -40,6 +40,7 @@ public class ModuleInfParser {
 			while((line = fileReader.readLine()) != null) {
 				currentBlock = processLine(line, currentBlock);
 			}
+			this.rawBlocks.add(currentBlock);
 			extractModuleInformation();
 			
 		} finally {

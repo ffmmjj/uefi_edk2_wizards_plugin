@@ -68,10 +68,6 @@ public class NewEdk2ModuleFileWizardpage extends WizardPage {
 				if(rdialog.open() == ContainerSelectionDialog.OK) {
 					Path selectedFolder = (Path)rdialog.getResult()[0];
 					dirLocation.setText(selectedFolder.toString());
-					
-					IFolder folder = project.getFolder(selectedFolder.removeFirstSegments(1));
-					IPath folderLocation = folder.getLocation();
-					folderLocation.toString();
 				}
 			}
 
