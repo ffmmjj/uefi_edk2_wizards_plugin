@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -60,11 +61,13 @@ public class ExistingModuleProjectWizard extends Wizard implements INewWizard, I
 			Edk2ModuleProjectCreator.CreateProjectStructure(newProjectHandle, new Path(existingModuleWizardPage.getLocation()).removeLastSegments(1).toString());
 			
 			List<Edk2Package> modulePackages;
+			Edk2Module projectModule = null;
 			if(existingModuleWizardPage.shouldInferWorkspacePath()) {
-				modulePackages = new Edk2Module(existingModuleWizardPage.getLocation()).getPackages();
+				projectModule = new Edk2Module(existingModuleWizardPage.getLocation());
 			} else {
-				modulePackages = new Edk2Module(existingModuleWizardPage.getLocation(), existingModuleWizardPage.getWorkspacePath()).getPackages();
+				projectModule = new Edk2Module(existingModuleWizardPage.getLocation(), existingModuleWizardPage.getWorkspacePath());
 			}
+			modulePackages = projectModule.getPackages();
 			
 			List<String> includePaths = new LinkedList<String>();
 			for(Edk2Package p : modulePackages) {
@@ -73,6 +76,8 @@ public class ExistingModuleProjectWizard extends Wizard implements INewWizard, I
 			ProjectSettingsManager.setIncludePaths(newProjectHandle, includePaths);
 			
 			ProjectBuildConfigManager.setEDK2BuildCommands(newProjectHandle, null);
+			
+			newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "EDK2_WORKSPACE"), projectModule.getWorkspacePath());
 		} catch (CoreException e1) {
 			e1.printStackTrace();
 		} catch(IOException e) {

@@ -2,6 +2,7 @@ package org.uefiide.wizards;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.core.resources.IFile;
@@ -12,7 +13,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.wizard.Wizard;
+import org.uefiide.structures.Edk2Module;
 import org.uefiide.wizards.pages.NewEdk2ModuleFileWizardpage;
 
 public class NewEdk2ModuleFileWizard extends Wizard {
@@ -39,11 +42,9 @@ public class NewEdk2ModuleFileWizard extends Wizard {
 		try {
 			AddNewFileToProject(this.project.getWorkspace().getRoot().getFolder(new Path(newFileLocation)), newFileName);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return true;
@@ -54,6 +55,31 @@ public class NewEdk2ModuleFileWizard extends Wizard {
 		file.createNewFile();
 		IFile newFile = newFileLocation.getFile(newFileName);
 		newFile.createLink(new Path(file.getAbsolutePath()), IResource.VIRTUAL, null);
+		
+		Edk2Module module = getProjectModule();
+		List<String> sources = module.getSources();
+		sources.add(newFileName);
+		module.setSources(sources);
+		module.save();
+	}
+	
+	private Edk2Module getProjectModule() {
+		Edk2Module module = null;
+		
+		try {
+			for(IResource res : this.project.members()) {
+				if(res.getName().endsWith(".inf")) {
+					module = new Edk2Module(res.getLocation().toString(), 
+							this.project.getPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "EDK2_WORKSPACE")));
+				}
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return module;
 	}
 
 }
