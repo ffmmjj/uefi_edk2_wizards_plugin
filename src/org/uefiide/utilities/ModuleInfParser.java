@@ -28,7 +28,7 @@ public class ModuleInfParser {
 	private List<String> packages = new LinkedList<String>();
 	private Map<String, String> definitions = new HashMap<String, String>();
 	
-	private void parseModule(Edk2Module module) {
+	private void parseModule(Edk2Module module) throws IOException, FileNotFoundException {
 		rawBlocks = new LinkedList<Edk2ElementBlock>();
 		BufferedReader fileReader = null;
 		
@@ -38,52 +38,17 @@ public class ModuleInfParser {
 			Edk2ElementBlock currentBlock = null;
 			
 			while((line = fileReader.readLine()) != null) {
-				line = line.trim();
-				
-				if(line.isEmpty()) {
-					continue;
-				}
-				if(isComment(line)) {
-					CommentBlock comment = new CommentBlock();
-					comment.addLine(line);
-					rawBlocks.add(comment);
-					continue;
-				}
-				if(isSectionStart(line)) {
-					if(currentBlock != null) {
-						rawBlocks.add(currentBlock);
-					}
-					currentBlock = Edk2ElementBlockFactory.createElementBlock(line);
-					continue;
-				}
-				
-				try {
-					currentBlock.addLine(line);
-				} catch(IllegalArgumentException e) {
-					e.printStackTrace();
-				}
-				
-				extractModuleInformation();
+				currentBlock = processLine(line, currentBlock);
 			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			extractModuleInformation();
+			
 		} finally {
-			if(fileReader != null) {
-				try {
-					fileReader.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			fileReader.close();
 		}
 	}
 	
-	public ModuleInfParser(Edk2Module module){
+	
+	public ModuleInfParser(Edk2Module module) throws IOException, FileNotFoundException {
 		this.module = module;
 		parseModule(module);
 	}
@@ -103,6 +68,10 @@ public class ModuleInfParser {
 	public List<String> getModuleSources() {
 		return this.sources;
 	}
+	
+	public List<Edk2ElementBlock> getRawBlocks() {
+		return this.rawBlocks;
+	}
 
 	private boolean isComment(String line) {
 		return line.startsWith("#");
@@ -118,8 +87,32 @@ public class ModuleInfParser {
 			block.accept(visitor);
 		}
 	}
-
-	public List<Edk2ElementBlock> getRawBlocks() {
-		return this.rawBlocks;
+	
+	private Edk2ElementBlock processLine(String line, Edk2ElementBlock currentBlock) {
+		line = line.trim();
+		
+		if(line.isEmpty()) {
+			return currentBlock;
+		}
+		if(isComment(line)) {
+			CommentBlock comment = new CommentBlock();
+			comment.addLine(line);
+			rawBlocks.add(comment);
+			return currentBlock;
+		}
+		if(isSectionStart(line)) {
+			if(currentBlock != null) {
+				rawBlocks.add(currentBlock);
+			}
+			currentBlock = Edk2ElementBlockFactory.createElementBlock(line);
+			return currentBlock;
+		}
+		
+		try {
+			currentBlock.addLine(line);
+		} catch(IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+		return currentBlock;
 	}
 }
