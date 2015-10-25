@@ -29,8 +29,8 @@ public class NewEdk2ModuleFileWizardpage extends WizardPage {
 	public NewEdk2ModuleFileWizardpage(IProject project) {
 		super("wizardPage");
 		this.project = project;
-		setTitle("Wizard Page title");
-		setDescription("Wizard Page description");
+		setTitle("New EDK2 Module Source Wizard");
+		setDescription("Add a new source file to an EDK2 module project.");
 	}
 
 	/**
