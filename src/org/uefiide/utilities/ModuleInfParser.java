@@ -101,6 +101,12 @@ public class ModuleInfParser {
 			rawBlocks.add(comment);
 			return currentBlock;
 		}
+		// Remove trailing comments in line
+		int commentMarkIndex = line.indexOf('#');
+		if(commentMarkIndex != -1) {
+			line = line.substring(0, commentMarkIndex);
+		}
+		
 		if(isSectionStart(line)) {
 			if(currentBlock != null) {
 				rawBlocks.add(currentBlock);
