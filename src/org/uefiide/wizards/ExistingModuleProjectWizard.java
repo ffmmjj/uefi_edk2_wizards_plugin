@@ -1,5 +1,6 @@
 package org.uefiide.wizards;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
@@ -8,6 +9,11 @@ import java.util.List;
 import org.eclipse.cdt.core.CCorePlugin;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -79,6 +85,41 @@ public class ExistingModuleProjectWizard extends Wizard implements INewWizard, I
 			
 			newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "EDK2_WORKSPACE"), projectModule.getWorkspacePath());
 			newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"), new Path(projectModule.getElementPath()).removeLastSegments(1).toString());
+			
+			ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
+				
+				@Override
+				public void resourceChanged(IResourceChangeEvent event) {
+					if(event.getType() == IResourceChangeEvent.POST_CHANGE) {
+						IResourceDelta delta = event.getDelta();
+						try {
+							delta.accept(new IResourceDeltaVisitor() {
+								
+								@Override
+								public boolean visit(IResourceDelta delta) throws CoreException {
+									IResource res = delta.getResource();
+									if(res != null && res.getName().endsWith(".inf")) {
+										try {
+											new Edk2Module(res.getLocation().toString());
+										} catch (FileNotFoundException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										} catch (IOException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
+										return false;
+									}
+									return true;
+								}
+							});
+						} catch (CoreException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				}
+			}, IResourceChangeEvent.POST_CHANGE);
 		} catch (CoreException e1) {
 			e1.printStackTrace();
 		} catch(IOException e) {
