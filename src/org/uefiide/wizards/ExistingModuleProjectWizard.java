@@ -60,6 +60,7 @@ public class ExistingModuleProjectWizard extends Wizard implements INewWizard, I
 			}
 			
 			Edk2ModuleProjectCreator.CreateEDK2ProjectFromExistingModule(projectModule, arg0);
+			arg0.done();
 		} catch (CoreException e1) {
 			e1.printStackTrace();
 		} catch (FileNotFoundException e) {

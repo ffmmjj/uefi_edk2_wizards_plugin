@@ -42,23 +42,26 @@ public class Edk2ModuleProjectCreator {
 		IPath newProjectPath = newProjectHandle.getLocation();
 		projDesc.setLocation(newProjectPath);
 		
+		monitor.beginTask("Adding C nature to project", 25);
 		CCorePlugin.getDefault().createCDTProject(projDesc, newProjectHandle, null);
 		Edk2ModuleProjectCreator.ConfigureProjectNature(newProjectHandle);
+		monitor.beginTask("Creating project structure", 45);
 		Edk2ModuleProjectCreator.CreateProjectStructure(newProjectHandle, new Path(module.getElementPath()).removeLastSegments(1).toString());
 		
-		List<Edk2Package> modulePackages;
-		modulePackages = module.getPackages();
-		
+		monitor.beginTask("Parsing include paths", 65);
+		List<Edk2Package> modulePackages = module.getPackages();
 		List<String> includePaths = new LinkedList<String>();
 		for(Edk2Package p : modulePackages) {
 			includePaths.addAll(p.getAbsoluteIncludePaths());
 		}
+		monitor.beginTask("Adding include paths", 85);
 		ProjectSettingsManager.setIncludePaths(newProjectHandle, includePaths);
 		
 		ProjectBuildConfigManager.setEDK2BuildCommands(newProjectHandle, null);
 		
+		monitor.beginTask("Saving EDK2 project properties", 95);
 		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "EDK2_WORKSPACE"), module.getWorkspacePath());
-		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"), new Path(module.getElementPath()).removeLastSegments(1).toString());	
+		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"), new Path(module.getElementPath()).removeLastSegments(1).toString());
 	}
 	
 	public static void CreateProjectStructure(IProject project, String location) {
