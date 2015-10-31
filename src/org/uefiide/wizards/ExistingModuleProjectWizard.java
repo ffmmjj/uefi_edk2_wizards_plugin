@@ -49,82 +49,24 @@ public class ExistingModuleProjectWizard extends Wizard implements INewWizard, I
 
 	@Override
 	public void run(IProgressMonitor arg0) throws InvocationTargetException, InterruptedException {
-		IWorkspaceRoot wrkSpaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		IPath newProjectPath = new Path(wrkSpaceRoot.getLocation().append(existingModuleWizardPage.getProjName()).toString());
-		IProject newProjectHandle = wrkSpaceRoot.getProject(existingModuleWizardPage.getProjName());
-		
-		arg0.beginTask("Creating Existing EDK2 module project", 10);
-				 
-		IProjectDescription projDesc;
 		try {
-			newProjectHandle.create(arg0);
-			newProjectHandle.open(arg0);
-			projDesc = ResourcesPlugin.getWorkspace().newProjectDescription(existingModuleWizardPage.getProjName());
-			projDesc.setLocation(newProjectPath);
+			arg0.beginTask("Creating Existing EDK2 module project", 10);
 			
-			CCorePlugin.getDefault().createCDTProject(projDesc, newProjectHandle, null);
-			Edk2ModuleProjectCreator.ConfigureProjectNature(newProjectHandle);
-			Edk2ModuleProjectCreator.CreateProjectStructure(newProjectHandle, new Path(existingModuleWizardPage.getLocation()).removeLastSegments(1).toString());
-			
-			List<Edk2Package> modulePackages;
-			Edk2Module projectModule = null;
+			Edk2Module projectModule  = null;
 			if(existingModuleWizardPage.shouldInferWorkspacePath()) {
 				projectModule = new Edk2Module(existingModuleWizardPage.getLocation());
 			} else {
 				projectModule = new Edk2Module(existingModuleWizardPage.getLocation(), existingModuleWizardPage.getWorkspacePath());
 			}
-			modulePackages = projectModule.getPackages();
 			
-			List<String> includePaths = new LinkedList<String>();
-			for(Edk2Package p : modulePackages) {
-				includePaths.addAll(p.getAbsoluteIncludePaths());
-			}
-			ProjectSettingsManager.setIncludePaths(newProjectHandle, includePaths);
-			
-			ProjectBuildConfigManager.setEDK2BuildCommands(newProjectHandle, null);
-			
-			newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "EDK2_WORKSPACE"), projectModule.getWorkspacePath());
-			newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"), new Path(projectModule.getElementPath()).removeLastSegments(1).toString());
-			
-			ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
-				
-				@Override
-				public void resourceChanged(IResourceChangeEvent event) {
-					if(event.getType() == IResourceChangeEvent.POST_CHANGE) {
-						IResourceDelta delta = event.getDelta();
-						try {
-							delta.accept(new IResourceDeltaVisitor() {
-								
-								@Override
-								public boolean visit(IResourceDelta delta) throws CoreException {
-									IResource res = delta.getResource();
-									if(res != null && res.getName().endsWith(".inf")) {
-										try {
-											new Edk2Module(res.getLocation().toString());
-										} catch (FileNotFoundException e) {
-											// TODO Auto-generated catch block
-											e.printStackTrace();
-										} catch (IOException e) {
-											// TODO Auto-generated catch block
-											e.printStackTrace();
-										}
-										return false;
-									}
-									return true;
-								}
-							});
-						} catch (CoreException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
-				}
-			}, IResourceChangeEvent.POST_CHANGE);
+			Edk2ModuleProjectCreator.CreateEDK2ProjectFromExistingModule(projectModule, arg0);
 		} catch (CoreException e1) {
 			e1.printStackTrace();
-		} catch(IOException e) {
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-		}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
 	}
 
 	@Override

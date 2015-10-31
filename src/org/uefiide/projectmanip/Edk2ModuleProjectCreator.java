@@ -1,7 +1,10 @@
 package org.uefiide.projectmanip;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.eclipse.cdt.core.CCorePlugin;
 import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.settings.model.ICProjectDescription;
 import org.eclipse.cdt.core.settings.model.ICProjectDescriptionManager;
@@ -17,12 +20,47 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.QualifiedName;
+import org.uefiide.structures.Edk2Module;
+import org.uefiide.structures.Edk2Package;
 
 public class Edk2ModuleProjectCreator {
-
+	
+	public static void CreateEDK2ProjectFromExistingModule(Edk2Module module, IProgressMonitor monitor) throws CoreException {
+		IProject newProjectHandle = ResourcesPlugin.getWorkspace().getRoot().getProject(module.getName());
+		IProjectDescription projDesc;
+		newProjectHandle.create(monitor);
+		newProjectHandle.open(monitor);
+		projDesc = ResourcesPlugin.getWorkspace().newProjectDescription(newProjectHandle.getName());
+		IPath newProjectPath = newProjectHandle.getLocation();
+		projDesc.setLocation(newProjectPath);
+		
+		CCorePlugin.getDefault().createCDTProject(projDesc, newProjectHandle, null);
+		Edk2ModuleProjectCreator.ConfigureProjectNature(newProjectHandle);
+		Edk2ModuleProjectCreator.CreateProjectStructure(newProjectHandle, new Path(module.getElementPath()).removeLastSegments(1).toString());
+		
+		List<Edk2Package> modulePackages;
+		modulePackages = module.getPackages();
+		
+		List<String> includePaths = new LinkedList<String>();
+		for(Edk2Package p : modulePackages) {
+			includePaths.addAll(p.getAbsoluteIncludePaths());
+		}
+		ProjectSettingsManager.setIncludePaths(newProjectHandle, includePaths);
+		
+		ProjectBuildConfigManager.setEDK2BuildCommands(newProjectHandle, null);
+		
+		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "EDK2_WORKSPACE"), module.getWorkspacePath());
+		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"), new Path(module.getElementPath()).removeLastSegments(1).toString());	
+	}
+	
 	public static void CreateProjectStructure(IProject project, String location) {
 		try {
 			addToProject(project, project, location, "");
