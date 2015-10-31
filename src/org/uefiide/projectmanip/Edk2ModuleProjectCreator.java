@@ -64,7 +64,7 @@ public class Edk2ModuleProjectCreator {
 		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"), new Path(module.getElementPath()).removeLastSegments(1).toString());
 	}
 	
-	public static void CreateProjectStructure(IProject project, String location) {
+	private static void CreateProjectStructure(IProject project, String location) {
 		try {
 			addToProject(project, project, location, "");
 		} catch (CoreException e) {
@@ -73,7 +73,7 @@ public class Edk2ModuleProjectCreator {
 		} 
 	}
 	
-	public static void ConfigureProjectNature(IProject project) throws CoreException {
+	private static void ConfigureProjectNature(IProject project) throws CoreException {
 		// Set up build information
 		ICProjectDescriptionManager pdMgr = CoreModel.getDefault().getProjectDescriptionManager();
 		ICProjectDescription cProjDesc = pdMgr.createProjectDescription(project, false);
