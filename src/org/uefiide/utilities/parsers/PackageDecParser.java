@@ -1,4 +1,4 @@
-package org.uefiide.utilities;
+package org.uefiide.utilities.parsers;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;

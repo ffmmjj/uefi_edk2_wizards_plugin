@@ -2,7 +2,7 @@ package org.uefiide.structures;
 
 import java.util.List;
 
-import org.uefiide.utilities.PackageDecParser;
+import org.uefiide.utilities.parsers.PackageDecParser;
 
 
 public class Edk2Package extends Edk2Element {
