@@ -65,61 +65,9 @@ public class Edk2ModuleProjectCreator {
 		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "EDK2_WORKSPACE"), module.getWorkspacePath());
 		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"), new Path(module.getElementPath()).removeLastSegments(1).toString());
 		
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
-			
-			@Override
-			public void resourceChanged(IResourceChangeEvent event) {
-				final IResource projectInf = findInfResource(event.getDelta());
-
-				if(projectInf != null) {
-					final IProject project = projectInf.getProject();
-					
-					WorkspaceJob job=new WorkspaceJob("Updating project"){
-					    @Override 
-					    public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-					    	try {
-								Edk2Module module = new Edk2Module(projectInf.getLocation().toString());
-								
-								Edk2ModuleProjectCreator.updateIncludePaths(project, module);
-								Edk2ModuleProjectCreator.UpdateProjectStructure(project, new Path(module.getElementPath()).removeLastSegments(1).toString());
-								project.refreshLocal(IResource.DEPTH_INFINITE,monitor);
-								
-								return Status.OK_STATUS;
-					    	} catch (FileNotFoundException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-					    	
-					    	return Status.CANCEL_STATUS;
-					    }
-					  };
-					  
-					  //job.setRule(project);
-					  job.schedule();
-				}
-			}
-			
-			private IResource findInfResource(IResourceDelta delta) {
-				if(delta.getResource().getName().endsWith(".inf")) {
-					return delta.getResource();
-				}
-				
-				for(IResourceDelta child : delta.getAffectedChildren()) {
-					IResource infResource = findInfResource(child);
-					if(infResource != null) {
-						return infResource;
-					}
-				}
-				
-				return null;
-			}
-		}, IResourceChangeEvent.POST_CHANGE);
 	}
 
-	private static void updateIncludePaths(IProject project, Edk2Module module) {
+	public static void updateIncludePaths(IProject project, Edk2Module module) {
 		List<Edk2Package> modulePackages = module.getPackages();
 		List<String> includePaths = new LinkedList<String>();
 		for(Edk2Package p : modulePackages) {

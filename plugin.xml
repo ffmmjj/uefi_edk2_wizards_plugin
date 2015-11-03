@@ -42,5 +42,11 @@
                name="New EDK2 Module Source file handler">
          </command>
    </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="SetResourceChangeListenerStartup">
+      </startup>
+   </extension>
 
 </plugin>
