@@ -84,7 +84,6 @@ public class ExistingModuleProjectWizard extends Wizard implements INewWizard, I
 
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		// TODO Auto-generated method stub
 
 	}
 }

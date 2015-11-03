@@ -1,6 +1,8 @@
 package org.uefiide.projectmanip;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,12 +24,18 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.Status;
 import org.uefiide.structures.Edk2Module;
 import org.uefiide.structures.Edk2Package;
 
@@ -46,25 +54,81 @@ public class Edk2ModuleProjectCreator {
 		CCorePlugin.getDefault().createCDTProject(projDesc, newProjectHandle, null);
 		Edk2ModuleProjectCreator.ConfigureProjectNature(newProjectHandle);
 		monitor.beginTask("Creating project structure", 45);
-		Edk2ModuleProjectCreator.CreateProjectStructure(newProjectHandle, new Path(module.getElementPath()).removeLastSegments(1).toString());
+		Edk2ModuleProjectCreator.UpdateProjectStructure(newProjectHandle, new Path(module.getElementPath()).removeLastSegments(1).toString());
 		
 		monitor.beginTask("Parsing include paths", 65);
-		List<Edk2Package> modulePackages = module.getPackages();
-		List<String> includePaths = new LinkedList<String>();
-		for(Edk2Package p : modulePackages) {
-			includePaths.addAll(p.getAbsoluteIncludePaths());
-		}
-		monitor.beginTask("Adding include paths", 85);
-		ProjectSettingsManager.setIncludePaths(newProjectHandle, includePaths);
+		updateIncludePaths(newProjectHandle, module);
 		
 		ProjectBuildConfigManager.setEDK2BuildCommands(newProjectHandle, null);
 		
 		monitor.beginTask("Saving EDK2 project properties", 95);
 		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "EDK2_WORKSPACE"), module.getWorkspacePath());
 		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"), new Path(module.getElementPath()).removeLastSegments(1).toString());
+		
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
+			
+			@Override
+			public void resourceChanged(IResourceChangeEvent event) {
+				final IResource projectInf = findInfResource(event.getDelta());
+
+				if(projectInf != null) {
+					final IProject project = projectInf.getProject();
+					
+					WorkspaceJob job=new WorkspaceJob("Updating project"){
+					    @Override 
+					    public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
+					    	try {
+								Edk2Module module = new Edk2Module(projectInf.getLocation().toString());
+								
+								Edk2ModuleProjectCreator.updateIncludePaths(project, module);
+								Edk2ModuleProjectCreator.UpdateProjectStructure(project, new Path(module.getElementPath()).removeLastSegments(1).toString());
+								project.refreshLocal(IResource.DEPTH_INFINITE,monitor);
+								
+								return Status.OK_STATUS;
+					    	} catch (FileNotFoundException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+					    	
+					    	return Status.CANCEL_STATUS;
+					    }
+					  };
+					  
+					  //job.setRule(project);
+					  job.schedule();
+				}
+			}
+			
+			private IResource findInfResource(IResourceDelta delta) {
+				if(delta.getResource().getName().endsWith(".inf")) {
+					return delta.getResource();
+				}
+				
+				for(IResourceDelta child : delta.getAffectedChildren()) {
+					IResource infResource = findInfResource(child);
+					if(infResource != null) {
+						return infResource;
+					}
+				}
+				
+				return null;
+			}
+		}, IResourceChangeEvent.POST_CHANGE);
+	}
+
+	private static void updateIncludePaths(IProject project, Edk2Module module) {
+		List<Edk2Package> modulePackages = module.getPackages();
+		List<String> includePaths = new LinkedList<String>();
+		for(Edk2Package p : modulePackages) {
+			includePaths.addAll(p.getAbsoluteIncludePaths());
+		}
+		ProjectSettingsManager.setIncludePaths(project, includePaths);
 	}
 	
-	private static void CreateProjectStructure(IProject project, String location) {
+	public static void UpdateProjectStructure(IProject project, String location) {
 		try {
 			addToProject(project, project, location, "");
 		} catch (CoreException e) {
@@ -99,7 +163,9 @@ public class Edk2ModuleProjectCreator {
 			IContainer srcFolder;
 			if(node != null && !node.isEmpty()) {
 				IFolder nodeFolder = parentFolder.getFolder(new Path(node));
-				nodeFolder.createLink(new Path(location).append(node), IResource.VIRTUAL, null);
+				if(!nodeFolder.exists()) {
+					nodeFolder.createLink(new Path(location).append(node), IResource.VIRTUAL, null);
+				}
 				srcFolder = nodeFolder;
 			} else {
 				srcFolder = parentFolder;
