@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.uefiide.structures.blocks.visitors.Edk2ElementBlockVisitor;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 public class UnknownBlock implements Edk2ElementBlock {
 	public List<String> lines = new LinkedList<String>();
 	

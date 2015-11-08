@@ -3,11 +3,8 @@ package org.uefiide.structures.blocks;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.uefiide.structures.blocks.visitors.Edk2ElementBlockVisitor;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class DefinitionsBlock implements Edk2ElementBlock {
 	private Map<String, String> defines = new HashMap<String, String>();

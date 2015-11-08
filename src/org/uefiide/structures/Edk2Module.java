@@ -31,7 +31,7 @@ public class Edk2Module extends Edk2Element {
 		super(path, workspacePath);
 		initialize();
 	}
-
+	
 	public String getName() {
 		return this.parser.getModuleName();
 	}
