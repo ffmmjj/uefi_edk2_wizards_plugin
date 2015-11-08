@@ -36,8 +36,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
+import org.uefiide.events.Edk2ModuleObservablesManager;
+import org.uefiide.events.Edk2ModuleObservablesManager.Edk2ModuleChangeEvent;
 import org.uefiide.structures.Edk2Module;
 import org.uefiide.structures.Edk2Package;
+
+import rx.Observer;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class Edk2ModuleProjectCreator {
 	
@@ -64,7 +70,35 @@ public class Edk2ModuleProjectCreator {
 		monitor.beginTask("Saving EDK2 project properties", 95);
 		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "EDK2_WORKSPACE"), module.getWorkspacePath());
 		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"), new Path(module.getElementPath()).removeLastSegments(1).toString());
-		
+		setResourceChangeListeners(newProjectHandle);
+	}
+
+	public static void setResourceChangeListeners(IProject newProjectHandle) {
+		Edk2ModuleObservablesManager.getProjectModuleModificationObservable()
+		.filter(new Func1<Edk2ModuleChangeEvent, Boolean>() {
+			@Override
+			public Boolean call(Edk2ModuleChangeEvent ev) {
+				return ev.getProject() == newProjectHandle;
+			}
+		}).subscribe(new Action1<Edk2ModuleChangeEvent>() {
+			@Override
+			public void call(Edk2ModuleChangeEvent ev) {
+				WorkspaceJob job=new WorkspaceJob("Updating project"){
+					@Override 
+					public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
+						Edk2Module module = ev.getModule();
+
+						Edk2ModuleProjectCreator.updateIncludePaths(ev.getProject(), module);
+						Edk2ModuleProjectCreator.UpdateProjectStructure(ev.getProject(), new Path(module.getElementPath()).removeLastSegments(1).toString());
+						ev.getProject().refreshLocal(IResource.DEPTH_INFINITE,monitor);
+
+						return Status.OK_STATUS;
+					}
+				};
+
+				job.schedule();
+			}
+		});
 	}
 
 	public static void updateIncludePaths(IProject project, Edk2Module module) {
