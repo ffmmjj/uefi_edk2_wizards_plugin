@@ -42,34 +42,26 @@ public class Edk2ModuleObservablesManager {
 		initialized = true;
 		deltaObserver = PublishSubject.create();
 		moduleChangesObservable = deltaObserver
-				.map(new Func1<IResourceDelta, Edk2ModuleChangeEvent>() {
-					@Override
-					public Edk2ModuleChangeEvent call(IResourceDelta delta) {
-						IResource resource = findInfResource(delta);
-						if(resource == null) {
-							return null;
-						}
-						
-						Edk2ModuleChangeEvent returnedEvent = null;
-						IProject project = resource.getProject();
-						try {
-							String workspacePath = project.getPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "EDK2_WORKSPACE"));
-							Edk2Module module = new Edk2Module(resource.getLocation().toString(), workspacePath);
-							returnedEvent = new Edk2ModuleChangeEvent(project, module);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						
-						return returnedEvent;
+				.map(delta -> {
+					IResource resource = findInfResource(delta);
+					if(resource == null) {
+						return null;
 					}
+					
+					Edk2ModuleChangeEvent returnedEvent = null;
+					IProject project = resource.getProject();
+					try {
+						String workspacePath = project.getPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "EDK2_WORKSPACE"));
+						Edk2Module module = new Edk2Module(resource.getLocation().toString(), workspacePath);
+						returnedEvent = new Edk2ModuleChangeEvent(project, module);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					return returnedEvent;
 				})
-				.filter(new Func1<Edk2ModuleChangeEvent, Boolean>() {
-					@Override
-					public Boolean call(Edk2ModuleChangeEvent ev) {
-						return ev != null;
-					}
-				});
+				.filter(ev -> ev != null);
 	}
 	public static void notifyResourceChanged(IResourceDelta delta) {
 		deltaObserver.onNext(delta);
