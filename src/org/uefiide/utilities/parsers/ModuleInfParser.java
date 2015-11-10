@@ -75,7 +75,7 @@ public class ModuleInfParser {
 	}
 
 	private boolean isComment(String line) {
-		return line.startsWith("#");
+		return line.startsWith("#") || line.startsWith("//");
 	}
 	
 	private boolean isSectionStart(String line) {
