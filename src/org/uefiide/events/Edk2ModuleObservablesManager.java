@@ -72,7 +72,7 @@ public class Edk2ModuleObservablesManager {
 	}
 	
 	private static IResource findInfResource(IResourceDelta delta) {
-		if(delta.getResource().getName().endsWith(".inf")) {
+		if(delta.getResource().getName().endsWith(".inf") && delta.getKind() == IResourceDelta.CHANGED) {
 			return delta.getResource();
 		}
 		

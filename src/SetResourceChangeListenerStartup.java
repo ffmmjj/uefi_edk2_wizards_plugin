@@ -29,6 +29,6 @@ public class SetResourceChangeListenerStartup implements IStartup {
 					Edk2ModuleObservablesManager.notifyResourceChanged(projectDelta);
 				}
 			}
-		});
+		}, IResourceChangeEvent.POST_CHANGE);
 	}
 }
