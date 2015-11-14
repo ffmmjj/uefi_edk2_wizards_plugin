@@ -48,5 +48,14 @@
             class="SetResourceChangeListenerStartup">
       </startup>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.uefiide.views.Edk2ModuleView"
+            id="eclipse_uefi_edk2_tools_wizards_plugin.moduleview"
+            name="Edk2 Module View"
+            restorable="true">
+      </view>
+   </extension>
 
 </plugin>
