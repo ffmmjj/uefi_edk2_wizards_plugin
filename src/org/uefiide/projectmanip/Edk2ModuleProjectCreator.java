@@ -56,11 +56,13 @@ public class Edk2ModuleProjectCreator {
 		IPath newProjectPath = newProjectHandle.getLocation();
 		projDesc.setLocation(newProjectPath);
 		
+		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "EDK2_WORKSPACE"), module.getWorkspacePath());
+		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"), new Path(module.getElementPath()).removeLastSegments(1).toString());
 		monitor.beginTask("Adding C nature to project", 25);
 		CCorePlugin.getDefault().createCDTProject(projDesc, newProjectHandle, null);
 		Edk2ModuleProjectCreator.ConfigureProjectNature(newProjectHandle);
 		monitor.beginTask("Creating project structure", 45);
-		Edk2ModuleProjectCreator.UpdateProjectStructure(newProjectHandle, new Path(module.getElementPath()).removeLastSegments(1).toString());
+		Edk2ModuleProjectCreator.UpdateProjectStructureFromModule(newProjectHandle, module);
 		
 		monitor.beginTask("Parsing include paths", 65);
 		updateIncludePaths(newProjectHandle, module);
@@ -68,8 +70,7 @@ public class Edk2ModuleProjectCreator {
 		ProjectBuildConfigManager.setEDK2BuildCommands(newProjectHandle, null);
 		
 		monitor.beginTask("Saving EDK2 project properties", 95);
-		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "EDK2_WORKSPACE"), module.getWorkspacePath());
-		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"), new Path(module.getElementPath()).removeLastSegments(1).toString());
+		
 		setResourceChangeListeners(newProjectHandle);
 	}
 
@@ -89,7 +90,7 @@ public class Edk2ModuleProjectCreator {
 						Edk2Module module = ev.getModule();
 
 						Edk2ModuleProjectCreator.updateIncludePaths(ev.getProject(), module);
-						Edk2ModuleProjectCreator.UpdateProjectStructure(ev.getProject(), new Path(module.getElementPath()).removeLastSegments(1).toString());
+						Edk2ModuleProjectCreator.UpdateProjectStructureFromModule(ev.getProject(), module);
 						ev.getProject().refreshLocal(IResource.DEPTH_INFINITE,monitor);
 
 						return Status.OK_STATUS;
@@ -110,15 +111,18 @@ public class Edk2ModuleProjectCreator {
 		ProjectSettingsManager.setIncludePaths(project, includePaths);
 	}
 	
-	public static void UpdateProjectStructure(IProject project, String location) {
+	public static void UpdateProjectStructureFromModule(IProject project, Edk2Module module) {
 		try {
-			addToProject(project, project, location, "");
+			for(String source : module.getSources()) {
+				AddModuleResourceToProject(project, source);
+			}
+			AddModuleResourceToProject(project, new Path(module.getElementPath()).lastSegment().toString());
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 	}
-	
+
 	private static void ConfigureProjectNature(IProject project) throws CoreException {
 		// Set up build information
 		ICProjectDescriptionManager pdMgr = CoreModel.getDefault().getProjectDescriptionManager();
@@ -138,31 +142,27 @@ public class Edk2ModuleProjectCreator {
 		pdMgr.setProjectDescription(project, cProjDesc);
 	}
 
-	private static void addToProject(IProject project, IContainer parentFolder, String location, String node) throws CoreException{
-		File nodeFile = new File(location + "/" + node);
-
-		if(nodeFile.isDirectory()){
-			IContainer srcFolder;
-			if(node != null && !node.isEmpty()) {
-				IFolder nodeFolder = parentFolder.getFolder(new Path(node));
-				if(!nodeFolder.exists()) {
-					nodeFolder.createLink(new Path(location).append(node), IResource.VIRTUAL, null);
-				}
-				srcFolder = nodeFolder;
-			} else {
-				srcFolder = parentFolder;
-			}
-			String[] subDirs = nodeFile.list();
-
-			for(String filename : subDirs){
-				if(!filename.equals(".project") && !filename.equals(".cproject")) {
-					addToProject(project, srcFolder, nodeFile.getAbsolutePath(), filename);
+	private static void AddModuleResourceToProject(IProject project, String resourceRelativePathString) throws CoreException {
+		String projectLocation = project.getPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"));
+		IPath resourceRelativePath = new Path(resourceRelativePathString);
+		IPath resourceAbsolutePath = new Path(projectLocation).append(resourceRelativePath);
+		
+		if(resourceRelativePath.segmentCount() > 1) {
+			IContainer currentFolder = project;
+			for(String segment : resourceRelativePath.removeLastSegments(1).segments()) {
+				currentFolder = currentFolder.getFolder(new Path(segment));
+				if(!currentFolder.exists()) {
+					IPath currentFolderAbsolutePath = new Path(projectLocation).append(segment);
+					((IFolder)currentFolder).createLink(currentFolderAbsolutePath, IResource.VIRTUAL, null);
 				}
 			}
-		} else if(nodeFile.isFile()) {
-			IFile infFile  = parentFolder.getFile(new Path(node));
-			if(!infFile.exists()) {
-				infFile.createLink(new Path(location).append(node), IResource.VIRTUAL, null);
+		}
+		
+		File resourceInFileSystem = new File(resourceAbsolutePath.toString());
+		if(resourceInFileSystem.isFile()) {
+			IFile file = project.getFile(resourceRelativePath);
+			if(!file.exists()) {
+				file.createLink(resourceAbsolutePath, IResource.VIRTUAL, null);
 			}
 		}
 	}
