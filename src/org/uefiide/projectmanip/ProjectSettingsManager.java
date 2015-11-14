@@ -30,7 +30,7 @@ public class ProjectSettingsManager {
 		configureIndexerToIncludeAllReferencedHeaders(project);
 		
 		ICProjectDescription projectDescription = CoreModel.getDefault().getProjectDescription(project);
-		ICLanguageSettingEntry[] entries = ĩncludePathString2ICLanguageSettingEntryArray(includePaths);
+		ICLanguageSettingEntry[] entries = IncludePathString2ICLanguageSettingEntryArray(includePaths);
 		
 		// Set include paths for all configurations in the CDT project
 		for(ICConfigurationDescription confDesc : projectDescription.getConfigurations()) {
@@ -58,7 +58,7 @@ public class ProjectSettingsManager {
 		IndexerPreferences.setProperties(project, IndexerPreferences.getScope(project), props);
 	}
 	
-	private static ICLanguageSettingEntry[] ĩncludePathString2ICLanguageSettingEntryArray(List<String> paths) {
+	private static ICLanguageSettingEntry[] IncludePathString2ICLanguageSettingEntryArray(List<String> paths) {
 		List<ICLanguageSettingEntry> entries = new ArrayList<>();
 		ICLanguageSettingEntry[] entriesArray = new ICLanguageSettingEntry[paths.size()];
 		
