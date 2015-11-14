@@ -120,6 +120,8 @@ public class Edk2ModuleProjectCreator {
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch(IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -142,28 +144,41 @@ public class Edk2ModuleProjectCreator {
 		pdMgr.setProjectDescription(project, cProjDesc);
 	}
 
-	private static void AddModuleResourceToProject(IProject project, String resourceRelativePathString) throws CoreException {
+	private static void AddModuleResourceToProject(IProject project, String resourceRelativePathString) throws CoreException, IOException {
 		String projectLocation = project.getPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"));
 		IPath resourceRelativePath = new Path(resourceRelativePathString);
 		IPath resourceAbsolutePath = new Path(projectLocation).append(resourceRelativePath);
 		
 		if(resourceRelativePath.segmentCount() > 1) {
 			IContainer currentFolder = project;
+			IPath currentAbsolutePath = new Path(projectLocation);
+			
+			createResourceParentInFileSystem(resourceAbsolutePath);
+			
 			for(String segment : resourceRelativePath.removeLastSegments(1).segments()) {
 				currentFolder = currentFolder.getFolder(new Path(segment));
+				currentAbsolutePath = currentAbsolutePath.append(segment);
+				
 				if(!currentFolder.exists()) {
-					IPath currentFolderAbsolutePath = new Path(projectLocation).append(segment);
-					((IFolder)currentFolder).createLink(currentFolderAbsolutePath, IResource.VIRTUAL, null);
+					((IFolder)currentFolder).createLink(currentAbsolutePath, IResource.VIRTUAL, null);
 				}
 			}
 		}
 		
 		File resourceInFileSystem = new File(resourceAbsolutePath.toString());
-		if(resourceInFileSystem.isFile()) {
-			IFile file = project.getFile(resourceRelativePath);
-			if(!file.exists()) {
-				file.createLink(resourceAbsolutePath, IResource.VIRTUAL, null);
-			}
+		if(!resourceInFileSystem.exists()) {
+			resourceInFileSystem.createNewFile();
 		}
+		
+		IFile file = project.getFile(resourceRelativePath);
+		if(!file.exists()) {
+			file.createLink(resourceAbsolutePath, IResource.VIRTUAL, null);
+		}
+	}
+
+	private static void createResourceParentInFileSystem(IPath resourceAbsolutePath) {
+		// Create resource's parent if it doesn't exist in the file system
+		File resourceParent = new File(resourceAbsolutePath.removeLastSegments(1).toString());
+		resourceParent.mkdirs();
 	}
 }
