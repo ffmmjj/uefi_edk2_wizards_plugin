@@ -26,21 +26,14 @@ public class Edk2ModuleContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-		//return this.modules;
-		return new String[]{"parent1", "parent2"};
+		return this.modules;
+		//return new String[]{"parent1", "parent2"};
 	}
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		//Edk2Module module = (Edk2Module) parentElement;
-		String parentStr = (String) parentElement;
-		if(parentStr.equals("parent1")) {
-			return new String[]{"child11", "child12"};
-		} else if(parentStr.equals("parent2")) {
-			return new String[]{"child21", "child22"};
-		}
-		
-		return null;
+		Edk2Module module = (Edk2Module) parentElement;
+		return module.getSources().toArray();
 	}
 
 	@Override
@@ -56,13 +49,12 @@ public class Edk2ModuleContentProvider implements ITreeContentProvider {
 			return "parent2";
 		}
 		
-		return null;
+		return "project";
 	}
 
 	@Override
 	public boolean hasChildren(Object element) {
-		String elementStr = (String) element;
-		return elementStr.startsWith("parent");
+		return (element instanceof Edk2Module);
 	}
 
 }

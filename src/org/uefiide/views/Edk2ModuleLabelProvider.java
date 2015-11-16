@@ -3,6 +3,7 @@ package org.uefiide.views;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
+import org.uefiide.structures.Edk2Module;
 
 public class Edk2ModuleLabelProvider implements ILabelProvider {
 
@@ -33,6 +34,9 @@ public class Edk2ModuleLabelProvider implements ILabelProvider {
 
 	@Override
 	public String getText(Object element) {
+		if(element instanceof Edk2Module) {
+			return ((Edk2Module)element).getName();
+		}
 		return (String)element;
 	}
 
