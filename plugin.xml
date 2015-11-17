@@ -16,6 +16,14 @@
             name="Existing EDK2 Module Wizard"
             project="true">
       </wizard>
+      <wizard
+            category="UefiIde.category.wizards"
+            class="org.uefiide.wizards.NewEdk2ModuleProjectWizard"
+            finalPerspective="org.eclipse.cdt.ui.CPerspective"
+            id="UefIde.wizards.new.empty_module"
+            name="New EDK2 Module Wizard"
+            project="true">
+      </wizard>
    </extension>
    <extension point="org.eclipse.ui.menus">
        <menuContribution

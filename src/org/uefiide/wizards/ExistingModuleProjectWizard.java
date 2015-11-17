@@ -41,6 +41,7 @@ public class ExistingModuleProjectWizard extends Wizard implements INewWizard, I
 		super();
 	}
 
+	@Override
 	public void addPages() {
 		super.addPages();
 		this.existingModuleWizardPage = new ExistingModuleWizardPage("Existing EDK2 Module Project");
