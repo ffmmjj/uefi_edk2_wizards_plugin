@@ -47,6 +47,9 @@
       <startup
             class="SetResourceChangeListenerStartup">
       </startup>
+      <startup
+            class="SetDefaultEditorsStartup">
+      </startup>
    </extension>
 
 </plugin>
