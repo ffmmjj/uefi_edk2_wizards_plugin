@@ -1,7 +1,13 @@
 package org.uefiide.events;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFileState;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
 import org.uefiide.structures.Edk2Module;
 
@@ -13,19 +19,25 @@ import rx.subjects.PublishSubject;
 public class Edk2ModuleObservablesManager {
 	public static class Edk2ModuleChangeEvent {
 		private IProject project;
-		private Edk2Module module;
+		private Edk2Module oldModule;
+		private Edk2Module newModule;
 		
-		public Edk2ModuleChangeEvent(IProject project, Edk2Module module) {
+		public Edk2ModuleChangeEvent(IProject project, Edk2Module oldModule, Edk2Module newModule) {
 			this.project = project;
-			this.module = module;
+			this.newModule = newModule;
+			this.oldModule = oldModule;
 		}
 
 		public IProject getProject() {
 			return project;
 		}
 
-		public Edk2Module getModule() {
-			return module;
+		public Edk2Module getOldModule() {
+			return oldModule;
+		}
+		
+		public Edk2Module getNewModule() {
+			return newModule;
 		}
 	}
 	
@@ -52,16 +64,30 @@ public class Edk2ModuleObservablesManager {
 					IProject project = resource.getProject();
 					try {
 						String workspacePath = project.getPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "EDK2_WORKSPACE"));
-						Edk2Module module = new Edk2Module(resource.getLocation().toString(), workspacePath);
-						returnedEvent = new Edk2ModuleChangeEvent(project, module);
+						
+						Edk2Module oldModule = getOldEdk2Module(resource, workspacePath);
+						Edk2Module newModule = new Edk2Module(resource.getLocation().toString(), workspacePath);
+						returnedEvent = new Edk2ModuleChangeEvent(project, oldModule, newModule);
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					
 					return returnedEvent;
 				})
 				.filter(ev -> ev != null);
+	}
+	private static Edk2Module getOldEdk2Module(IResource resource, String workspacePath)
+			throws CoreException, FileNotFoundException, IOException {
+		Edk2Module oldModule = null;
+		IFile infFile = (IFile) resource;
+		IFileState[] states = infFile.getHistory(null);
+		
+		if(states != null) {
+			IFileState lastState = states[0];
+			oldModule = new Edk2Module(resource.getLocation().toString(), workspacePath, lastState.getContents());
+		}
+		
+		return oldModule;
 	}
 	public static void notifyResourceChanged(IResourceDelta delta) {
 		deltaObserver.onNext(delta);

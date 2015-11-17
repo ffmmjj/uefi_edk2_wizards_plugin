@@ -33,7 +33,7 @@ public class ModuleInfParser {
 		BufferedReader fileReader = null;
 		
 		try {
-			fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(module.getElementPath())));
+			fileReader = new BufferedReader(new InputStreamReader(module.getContentsStream()));
 			String line;
 			Edk2ElementBlock currentBlock = null;
 			

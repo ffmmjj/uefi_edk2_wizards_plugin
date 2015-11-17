@@ -87,7 +87,7 @@ public class Edk2ModuleProjectCreator {
 				WorkspaceJob job=new WorkspaceJob("Updating project"){
 					@Override 
 					public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-						Edk2Module module = ev.getModule();
+						Edk2Module module = ev.getNewModule();
 
 						Edk2ModuleProjectCreator.updateIncludePaths(ev.getProject(), module);
 						Edk2ModuleProjectCreator.UpdateProjectStructureFromModule(ev.getProject(), module);

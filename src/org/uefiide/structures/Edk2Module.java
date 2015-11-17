@@ -2,6 +2,7 @@ package org.uefiide.structures;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -29,6 +30,11 @@ public class Edk2Module extends Edk2Element {
 
 	public Edk2Module(String path, String workspacePath) throws FileNotFoundException, IOException {
 		super(path, workspacePath);
+		initialize();
+	}
+	
+	public Edk2Module(String path, String workspacePath, InputStream contents) throws FileNotFoundException, IOException {
+		super(path, workspacePath, contents);
 		initialize();
 	}
 	
