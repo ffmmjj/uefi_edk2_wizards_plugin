@@ -54,12 +54,9 @@ public class Edk2ModuleObservablesManager {
 		initialized = true;
 		deltaObserver = PublishSubject.create();
 		moduleChangesObservable = deltaObserver
-				.map(delta -> {
-					IResource resource = findInfResource(delta);
-					if(resource == null) {
-						return null;
-					}
-					
+				.map(delta -> findInfResource(delta))
+				.filter(resource -> resource != null)
+				.map(resource -> {
 					Edk2ModuleChangeEvent returnedEvent = null;
 					IProject project = resource.getProject();
 					try {

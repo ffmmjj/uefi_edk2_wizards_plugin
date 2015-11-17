@@ -48,7 +48,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 
 public class Edk2ModuleProjectCreator {
-	
+
 	public static void CreateEDK2ProjectFromExistingModule(Edk2Module module, IProgressMonitor monitor) throws CoreException {
 		IProject newProjectHandle = ResourcesPlugin.getWorkspace().getRoot().getProject(module.getName());
 		IProjectDescription projDesc;
@@ -57,7 +57,7 @@ public class Edk2ModuleProjectCreator {
 		projDesc = ResourcesPlugin.getWorkspace().newProjectDescription(newProjectHandle.getName());
 		IPath newProjectPath = newProjectHandle.getLocation();
 		projDesc.setLocation(newProjectPath);
-		
+
 		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "EDK2_WORKSPACE"), module.getWorkspacePath());
 		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"), new Path(module.getElementPath()).removeLastSegments(1).toString());
 		monitor.beginTask("Adding C nature to project", 25);
@@ -65,148 +65,139 @@ public class Edk2ModuleProjectCreator {
 		Edk2ModuleProjectCreator.ConfigureProjectNature(newProjectHandle);
 		monitor.beginTask("Creating project structure", 45);
 		Edk2ModuleProjectCreator.UpdateProjectStructureFromModule(newProjectHandle, module);
-		
+
 		monitor.beginTask("Parsing include paths", 65);
 		updateIncludePaths(newProjectHandle, module);
-		
+
 		ProjectBuildConfigManager.setEDK2BuildCommands(newProjectHandle, null);
-		
+
 		monitor.beginTask("Saving EDK2 project properties", 95);
-		
+
 		setResourceChangeListeners(newProjectHandle);
 	}
 
 	public static void setResourceChangeListeners(IProject newProjectHandle) {
 		Edk2ModuleObservablesManager.getProjectModuleModificationObservable()
-		.filter(new Func1<Edk2ModuleChangeEvent, Boolean>() {
-			@Override
-			public Boolean call(Edk2ModuleChangeEvent ev) {
-				return ev.getProject() == newProjectHandle;
+		.filter(event -> event.getProject() == newProjectHandle)
+		.map(ev -> {
+			return new WorkspaceJob("Updating project"){
+				@Override 
+				public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
+					Edk2Module module = ev.getNewModule();
+
+					Edk2ModuleProjectCreator.updateIncludePaths(ev.getProject(), module);
+					UpdateProjectStructureFromModuleDiff(ev.getProject(), ev.getOldModule(), module);
+					ev.getProject().refreshLocal(IResource.DEPTH_INFINITE,monitor);
+
+					return Status.OK_STATUS;
+				}
+			};
+		})
+		.subscribe(job -> job.schedule());
+	}
+
+		public static void updateIncludePaths(IProject project, Edk2Module module) {
+			List<Edk2Package> modulePackages = module.getPackages();
+			List<String> includePaths = new LinkedList<String>();
+			for(Edk2Package p : modulePackages) {
+				includePaths.addAll(p.getAbsoluteIncludePaths());
 			}
-		}).subscribe(new Action1<Edk2ModuleChangeEvent>() {
-			@Override
-			public void call(Edk2ModuleChangeEvent ev) {
-				WorkspaceJob job=new WorkspaceJob("Updating project"){
-					@Override 
-					public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-						Edk2Module module = ev.getNewModule();
+			ProjectSettingsManager.setIncludePaths(project, includePaths);
+		}
 
-						Edk2ModuleProjectCreator.updateIncludePaths(ev.getProject(), module);
-						UpdateProjectStructureFromModuleDiff(ev.getProject(), ev.getOldModule(), module);
-						//Edk2ModuleProjectCreator.UpdateProjectStructureFromModule(ev.getProject(), module);
-						ev.getProject().refreshLocal(IResource.DEPTH_INFINITE,monitor);
+		public static void UpdateProjectStructureFromModuleDiff(IProject project, Edk2Module oldModule, Edk2Module newModule) {
+			try {
+				removeOldSources(project, oldModule, newModule);
+				addNewSources(project, newModule);
+				AddModuleResourceToProject(project, new Path(newModule.getElementPath()).lastSegment().toString());
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+		}
 
-						return Status.OK_STATUS;
+		private static void addNewSources(IProject project, Edk2Module newModule) throws CoreException, IOException {
+			for(String source : newModule.getSources()) {
+				AddModuleResourceToProject(project, source);
+			}
+		}
+
+		private static void removeOldSources(IProject project, Edk2Module oldModule, Edk2Module newModule)
+				throws CoreException {
+			if(oldModule != null) {
+				Set<String> oldSources = new HashSet<>();
+				oldSources.addAll(oldModule.getSources());
+				oldSources.removeAll(newModule.getSources());
+
+				for(String oldSource : oldSources) {
+					IFile fileToRemove = project.getFile(oldSource);
+					if(fileToRemove.exists()) {
+						fileToRemove.delete(true, null);
 					}
-				};
-
-				job.schedule();
-			}
-		});
-	}
-
-	public static void updateIncludePaths(IProject project, Edk2Module module) {
-		List<Edk2Package> modulePackages = module.getPackages();
-		List<String> includePaths = new LinkedList<String>();
-		for(Edk2Package p : modulePackages) {
-			includePaths.addAll(p.getAbsoluteIncludePaths());
-		}
-		ProjectSettingsManager.setIncludePaths(project, includePaths);
-	}
-	
-	public static void UpdateProjectStructureFromModuleDiff(IProject project, Edk2Module oldModule, Edk2Module newModule) {
-		try {
-			removeOldSources(project, oldModule, newModule);
-			addNewSources(project, newModule);
-			AddModuleResourceToProject(project, new Path(newModule.getElementPath()).lastSegment().toString());
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private static void addNewSources(IProject project, Edk2Module newModule) throws CoreException, IOException {
-		for(String source : newModule.getSources()) {
-			AddModuleResourceToProject(project, source);
-		}
-	}
-
-	private static void removeOldSources(IProject project, Edk2Module oldModule, Edk2Module newModule)
-			throws CoreException {
-		if(oldModule != null) {
-			Set<String> oldSources = new HashSet<>();
-			oldSources.addAll(oldModule.getSources());
-			oldSources.removeAll(newModule.getSources());
-			
-			for(String oldSource : oldSources) {
-				IFile fileToRemove = project.getFile(oldSource);
-				if(fileToRemove.exists()) {
-					fileToRemove.delete(true, null);
 				}
 			}
 		}
-	}
-	
-	public static void UpdateProjectStructureFromModule(IProject project, Edk2Module module) {
-		UpdateProjectStructureFromModuleDiff(project, null, module);
-	}
 
-	private static void ConfigureProjectNature(IProject project) throws CoreException {
-		// Set up build information
-		ICProjectDescriptionManager pdMgr = CoreModel.getDefault().getProjectDescriptionManager();
-		ICProjectDescription cProjDesc = pdMgr.createProjectDescription(project, false);
-		ManagedBuildInfo info = ManagedBuildManager.createBuildInfo(project);
-		ManagedProject mProj = new ManagedProject(cProjDesc);
-		info.setManagedProject(mProj);
+		public static void UpdateProjectStructureFromModule(IProject project, Edk2Module module) {
+			UpdateProjectStructureFromModuleDiff(project, null, module);
+		}
 
-		CfgHolder cfgHolder = new CfgHolder(null, null);
-		String s = "0";
-		Configuration config = new Configuration(mProj, (ToolChain)null, ManagedBuildManager.calculateChildId(s, null), cfgHolder.getName());
-		IBuilder builder = config.getEditableBuilder();
-		builder.setManagedBuildOn(false);
-		CConfigurationData data = config.getConfigurationData();
-		cProjDesc.createConfiguration(ManagedBuildManager.CFG_DATA_PROVIDER_ID, data);
+		private static void ConfigureProjectNature(IProject project) throws CoreException {
+			// Set up build information
+			ICProjectDescriptionManager pdMgr = CoreModel.getDefault().getProjectDescriptionManager();
+			ICProjectDescription cProjDesc = pdMgr.createProjectDescription(project, false);
+			ManagedBuildInfo info = ManagedBuildManager.createBuildInfo(project);
+			ManagedProject mProj = new ManagedProject(cProjDesc);
+			info.setManagedProject(mProj);
 
-		pdMgr.setProjectDescription(project, cProjDesc);
-	}
+			CfgHolder cfgHolder = new CfgHolder(null, null);
+			String s = "0";
+			Configuration config = new Configuration(mProj, (ToolChain)null, ManagedBuildManager.calculateChildId(s, null), cfgHolder.getName());
+			IBuilder builder = config.getEditableBuilder();
+			builder.setManagedBuildOn(false);
+			CConfigurationData data = config.getConfigurationData();
+			cProjDesc.createConfiguration(ManagedBuildManager.CFG_DATA_PROVIDER_ID, data);
 
-	private static void AddModuleResourceToProject(IProject project, String resourceRelativePathString) throws CoreException, IOException {
-		String projectLocation = project.getPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"));
-		IPath resourceRelativePath = new Path(resourceRelativePathString);
-		IPath resourceAbsolutePath = new Path(projectLocation).append(resourceRelativePath);
-		
-		if(resourceRelativePath.segmentCount() > 1) {
-			IContainer currentFolder = project;
-			IPath currentAbsolutePath = new Path(projectLocation);
-			
-			createResourceParentInFileSystem(resourceAbsolutePath);
-			
-			for(String segment : resourceRelativePath.removeLastSegments(1).segments()) {
-				currentFolder = currentFolder.getFolder(new Path(segment));
-				currentAbsolutePath = currentAbsolutePath.append(segment);
-				
-				if(!currentFolder.exists()) {
-					((IFolder)currentFolder).createLink(currentAbsolutePath, IResource.VIRTUAL, null);
+			pdMgr.setProjectDescription(project, cProjDesc);
+		}
+
+		private static void AddModuleResourceToProject(IProject project, String resourceRelativePathString) throws CoreException, IOException {
+			String projectLocation = project.getPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"));
+			IPath resourceRelativePath = new Path(resourceRelativePathString);
+			IPath resourceAbsolutePath = new Path(projectLocation).append(resourceRelativePath);
+
+			if(resourceRelativePath.segmentCount() > 1) {
+				IContainer currentFolder = project;
+				IPath currentAbsolutePath = new Path(projectLocation);
+
+				createResourceParentInFileSystem(resourceAbsolutePath);
+
+				for(String segment : resourceRelativePath.removeLastSegments(1).segments()) {
+					currentFolder = currentFolder.getFolder(new Path(segment));
+					currentAbsolutePath = currentAbsolutePath.append(segment);
+
+					if(!currentFolder.exists()) {
+						((IFolder)currentFolder).createLink(currentAbsolutePath, IResource.VIRTUAL, null);
+					}
 				}
 			}
-		}
-		
-		File resourceInFileSystem = new File(resourceAbsolutePath.toString());
-		if(!resourceInFileSystem.exists()) {
-			resourceInFileSystem.createNewFile();
-		}
-		
-		IFile file = project.getFile(resourceRelativePath);
-		if(!file.exists()) {
-			file.createLink(resourceAbsolutePath, IResource.VIRTUAL, null);
-		}
-	}
 
-	private static void createResourceParentInFileSystem(IPath resourceAbsolutePath) {
-		// Create resource's parent if it doesn't exist in the file system
-		File resourceParent = new File(resourceAbsolutePath.removeLastSegments(1).toString());
-		resourceParent.mkdirs();
+			File resourceInFileSystem = new File(resourceAbsolutePath.toString());
+			if(!resourceInFileSystem.exists()) {
+				resourceInFileSystem.createNewFile();
+			}
+
+			IFile file = project.getFile(resourceRelativePath);
+			if(!file.exists()) {
+				file.createLink(resourceAbsolutePath, IResource.VIRTUAL, null);
+			}
+		}
+
+		private static void createResourceParentInFileSystem(IPath resourceAbsolutePath) {
+			// Create resource's parent if it doesn't exist in the file system
+			File resourceParent = new File(resourceAbsolutePath.removeLastSegments(1).toString());
+			resourceParent.mkdirs();
+		}
 	}
-}
