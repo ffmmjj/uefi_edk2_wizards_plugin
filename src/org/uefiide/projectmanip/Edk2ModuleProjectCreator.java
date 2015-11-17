@@ -3,8 +3,10 @@ package org.uefiide.projectmanip;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.cdt.core.CCorePlugin;
 import org.eclipse.cdt.core.model.CoreModel;
@@ -90,7 +92,8 @@ public class Edk2ModuleProjectCreator {
 						Edk2Module module = ev.getNewModule();
 
 						Edk2ModuleProjectCreator.updateIncludePaths(ev.getProject(), module);
-						Edk2ModuleProjectCreator.UpdateProjectStructureFromModule(ev.getProject(), module);
+						UpdateProjectStructureFromModuleDiff(ev.getProject(), ev.getOldModule(), module);
+						//Edk2ModuleProjectCreator.UpdateProjectStructureFromModule(ev.getProject(), module);
 						ev.getProject().refreshLocal(IResource.DEPTH_INFINITE,monitor);
 
 						return Status.OK_STATUS;
@@ -111,18 +114,43 @@ public class Edk2ModuleProjectCreator {
 		ProjectSettingsManager.setIncludePaths(project, includePaths);
 	}
 	
-	public static void UpdateProjectStructureFromModule(IProject project, Edk2Module module) {
+	public static void UpdateProjectStructureFromModuleDiff(IProject project, Edk2Module oldModule, Edk2Module newModule) {
 		try {
-			for(String source : module.getSources()) {
-				AddModuleResourceToProject(project, source);
-			}
-			AddModuleResourceToProject(project, new Path(module.getElementPath()).lastSegment().toString());
+			removeOldSources(project, oldModule, newModule);
+			addNewSources(project, newModule);
+			AddModuleResourceToProject(project, new Path(newModule.getElementPath()).lastSegment().toString());
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static void addNewSources(IProject project, Edk2Module newModule) throws CoreException, IOException {
+		for(String source : newModule.getSources()) {
+			AddModuleResourceToProject(project, source);
+		}
+	}
+
+	private static void removeOldSources(IProject project, Edk2Module oldModule, Edk2Module newModule)
+			throws CoreException {
+		if(oldModule != null) {
+			Set<String> oldSources = new HashSet<>();
+			oldSources.addAll(oldModule.getSources());
+			oldSources.removeAll(newModule.getSources());
+			
+			for(String oldSource : oldSources) {
+				IFile fileToRemove = project.getFile(oldSource);
+				if(fileToRemove.exists()) {
+					fileToRemove.delete(true, null);
+				}
+			}
+		}
+	}
+	
+	public static void UpdateProjectStructureFromModule(IProject project, Edk2Module module) {
+		UpdateProjectStructureFromModuleDiff(project, null, module);
 	}
 
 	private static void ConfigureProjectNature(IProject project) throws CoreException {
