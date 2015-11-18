@@ -1,4 +1,4 @@
-package org.uefiide.projectmanip;
+package org.uefiide.projectmanip.internals;
 
 import java.util.ArrayList;
 import java.util.List;

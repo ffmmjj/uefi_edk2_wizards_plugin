@@ -26,9 +26,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.uefiide.projectmanip.Edk2ModuleProjectCreator;
-import org.uefiide.projectmanip.ProjectBuildConfigManager;
-import org.uefiide.projectmanip.ProjectSettingsManager;
+import org.uefiide.projectmanip.ExistingEdk2ModuleProjectCreator;
+import org.uefiide.projectmanip.internals.ProjectBuildConfigManager;
+import org.uefiide.projectmanip.internals.ProjectSettingsManager;
 import org.uefiide.structures.Edk2Module;
 import org.uefiide.structures.Edk2Package;
 import org.uefiide.wizards.pages.ExistingModuleWizardPage;
@@ -60,7 +60,7 @@ public class ExistingModuleProjectWizard extends Wizard implements INewWizard, I
 				projectModule = new Edk2Module(existingModuleWizardPage.getLocation(), existingModuleWizardPage.getWorkspacePath());
 			}
 			
-			Edk2ModuleProjectCreator.CreateEDK2ProjectFromExistingModule(projectModule, arg0);
+			ExistingEdk2ModuleProjectCreator.CreateEDK2ProjectFromExistingModule(projectModule, arg0);
 			arg0.done();
 		} catch (CoreException e1) {
 			e1.printStackTrace();

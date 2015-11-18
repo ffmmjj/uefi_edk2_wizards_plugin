@@ -40,6 +40,8 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.uefiide.events.Edk2ModuleObservablesManager;
 import org.uefiide.events.Edk2ModuleObservablesManager.Edk2ModuleChangeEvent;
+import org.uefiide.projectmanip.internals.ProjectBuildConfigManager;
+import org.uefiide.projectmanip.internals.ProjectSettingsManager;
 import org.uefiide.structures.Edk2Module;
 import org.uefiide.structures.Edk2Package;
 
@@ -47,7 +49,7 @@ import rx.Observer;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-public class Edk2ModuleProjectCreator {
+public class ExistingEdk2ModuleProjectCreator {
 
 	public static void CreateEDK2ProjectFromExistingModule(Edk2Module module, IProgressMonitor monitor) throws CoreException {
 		IProject newProjectHandle = ResourcesPlugin.getWorkspace().getRoot().getProject(module.getName());
@@ -62,9 +64,9 @@ public class Edk2ModuleProjectCreator {
 		newProjectHandle.setPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"), new Path(module.getElementPath()).removeLastSegments(1).toString());
 		monitor.beginTask("Adding C nature to project", 25);
 		CCorePlugin.getDefault().createCDTProject(projDesc, newProjectHandle, null);
-		Edk2ModuleProjectCreator.ConfigureProjectNature(newProjectHandle);
+		ExistingEdk2ModuleProjectCreator.ConfigureProjectNature(newProjectHandle);
 		monitor.beginTask("Creating project structure", 45);
-		Edk2ModuleProjectCreator.UpdateProjectStructureFromModule(newProjectHandle, module);
+		ExistingEdk2ModuleProjectCreator.UpdateProjectStructureFromModule(newProjectHandle, module);
 
 		monitor.beginTask("Parsing include paths", 65);
 		updateIncludePaths(newProjectHandle, module);
@@ -85,7 +87,7 @@ public class Edk2ModuleProjectCreator {
 				public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 					Edk2Module module = ev.getNewModule();
 
-					Edk2ModuleProjectCreator.updateIncludePaths(ev.getProject(), module);
+					ExistingEdk2ModuleProjectCreator.updateIncludePaths(ev.getProject(), module);
 					UpdateProjectStructureFromModuleDiff(ev.getProject(), ev.getOldModule(), module);
 					ev.getProject().refreshLocal(IResource.DEPTH_INFINITE,monitor);
 
