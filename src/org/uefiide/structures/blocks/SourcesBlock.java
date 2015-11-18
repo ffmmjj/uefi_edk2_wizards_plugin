@@ -38,7 +38,7 @@ public class SourcesBlock implements Edk2ElementBlock {
 
 	@Override
 	public void addLine(String line) {
-		this.addSourceFile(line);
+		this.addSourceFile(line.trim());
 	}
 
 	@Override
