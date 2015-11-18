@@ -8,7 +8,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.uefiide.projectmanip.internals.Edk2ModuleTemplate;
 import org.uefiide.structures.Edk2Module;
+import org.uefiide.structures.Edk2Module.Edk2ModuleType;
 
 public class NewEdk2ModuleProjectCreator {
 	public static void CreateNewEdk2ModuleProject(String moduleFolder, String moduleName, String workspace, IProgressMonitor monitor) {
@@ -24,7 +26,8 @@ public class NewEdk2ModuleProjectCreator {
 			File infFile = new File(moduleLocationPath.toString());
 			infFile.createNewFile();
 			FileOutputStream fop = new FileOutputStream(infFile);
-			populateInfContents(fop);
+			Edk2ModuleTemplate template = Edk2ModuleTemplate.get(Edk2ModuleType.UEFI_APPLICATION);
+			template.writeModuleTemplate(fop);
 			fop.close();
 			
 			Edk2Module projectModule = new Edk2Module(moduleLocationPath.toString(), workspace);
@@ -36,23 +39,5 @@ public class NewEdk2ModuleProjectCreator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	private static void populateInfContents(FileOutputStream fop) throws IOException {
-		fop.write("[Defines]\n".getBytes());
-		fop.write("  MODULE_TYPE = UEFI_APPLICATION\n".getBytes());
-		fop.write("  INF_VERSION = 0x00010006\n".getBytes());
-		fop.write("  BASE_NAME = TestModule\n".getBytes());
-		fop.write("  VERSION_STRING = 0.1\n".getBytes());
-		fop.write("  FILE_GUID = a912f198-7f0e-4803-b918-b757b80cec83\n".getBytes());
-		fop.write("  ENTRY_POINT = ShellCEntryLib\n".getBytes());
-		fop.write("[Sources]\n".getBytes());
-		fop.write("  TestModule.c\n".getBytes());
-		fop.write("[Packages]\n".getBytes());
-		fop.write("  MdePkg/MdePkg.dec\n".getBytes());
-		fop.write("  ShellPkg/ShellPkg.dec\n".getBytes());
-		fop.write("[LibraryClasses]\n".getBytes());
-		fop.write("  UefiLib\n".getBytes());
-		fop.write("  ShellCEntryLib\n".getBytes());
 	}
 }

@@ -17,6 +17,13 @@ import org.uefiide.structures.blocks.visitors.BlockUpdateVisitor;
 import org.uefiide.utilities.parsers.ModuleInfParser;
 
 public class Edk2Module extends Edk2Element {
+	public enum Edk2ModuleType {
+		UEFI_APPLICATION,
+		UEFI_STDLIB_APPLICATION,
+		UEFI_DRIVER,
+		LIBRARY_CLASS_IMPLEMENTATION
+	};
+	
 	private ModuleInfParser parser;
 	private List<String> sources = new LinkedList<String>();
 	private List<Edk2Package> packages = new LinkedList<Edk2Package>();
