@@ -1,6 +1,5 @@
 package org.uefiide.wizards.pages;
 
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -8,7 +7,12 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 public class ExistingModuleWizardPage extends WizardPage {
 	private Button infBrowserBtn;

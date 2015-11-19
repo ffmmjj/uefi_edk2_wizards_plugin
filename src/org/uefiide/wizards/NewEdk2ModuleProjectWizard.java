@@ -1,29 +1,21 @@
 package org.uefiide.wizards;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.internal.resources.Folder;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.uefiide.projectmanip.ExistingEdk2ModuleProjectCreator;
 import org.uefiide.projectmanip.NewEdk2ModuleProjectCreator;
-import org.uefiide.structures.Edk2Module;
+import org.uefiide.structures.Edk2Module.Edk2ModuleType;
 import org.uefiide.wizards.pages.ExistingModuleWizardPage;
+import org.uefiide.wizards.pages.NewEdk2ModuleProjectPage;
 
 public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IRunnableWithProgress {
 
-	private ExistingModuleWizardPage existingModuleWizardPage;
+	private NewEdk2ModuleProjectPage newModuleWizardPage;
 	
 	public NewEdk2ModuleProjectWizard() {
 		super();
@@ -38,8 +30,8 @@ public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IR
 	@Override
 	public void addPages() {
 		super.addPages();
-		this.existingModuleWizardPage = new ExistingModuleWizardPage("New EDK2 Module Project");
-		addPage(existingModuleWizardPage);
+		this.newModuleWizardPage = new NewEdk2ModuleProjectPage("New EDK2 Module Project");
+		addPage(newModuleWizardPage);
 	}
 	
 	@Override
@@ -47,10 +39,11 @@ public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IR
 		arg0.beginTask("Creating New EDK2 module project", 10);
 
 		NewEdk2ModuleProjectCreator.CreateNewEdk2ModuleProject(
-				"C:\\Users\\ffmmj\\Documents\\dev\\UDK2014_workspace\\AppPkg\\Applications\\TestModule", 
+				newModuleWizardPage.getNewModuleRootFolder(), 
 				"TestModule.inf",
-				"C:\\Users\\ffmmj\\Documents\\dev\\UDK2014_workspace",
-				arg0);
+				newModuleWizardPage.getWorkspace(),
+				arg0,
+				Edk2ModuleType.UEFI_APPLICATION);
 
 		arg0.done();
 	}

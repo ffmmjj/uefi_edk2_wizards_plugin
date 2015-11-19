@@ -13,7 +13,8 @@ import org.uefiide.structures.Edk2Module;
 import org.uefiide.structures.Edk2Module.Edk2ModuleType;
 
 public class NewEdk2ModuleProjectCreator {
-	public static void CreateNewEdk2ModuleProject(String moduleFolder, String moduleName, String workspace, IProgressMonitor monitor) {
+	public static void CreateNewEdk2ModuleProject(String moduleFolder, String moduleName, String workspace, 
+			IProgressMonitor monitor, Edk2ModuleType type) {
 		try {
 			IPath moduleFolderPath = new Path(moduleFolder);
 			IPath moduleLocationPath = moduleFolderPath.append(moduleName);
@@ -26,7 +27,7 @@ public class NewEdk2ModuleProjectCreator {
 			File infFile = new File(moduleLocationPath.toString());
 			infFile.createNewFile();
 			FileOutputStream fop = new FileOutputStream(infFile);
-			Edk2ModuleTemplate template = Edk2ModuleTemplate.get(Edk2ModuleType.UEFI_APPLICATION);
+			Edk2ModuleTemplate template = Edk2ModuleTemplate.get(type);
 			template.writeModuleTemplate(fop);
 			fop.close();
 			
