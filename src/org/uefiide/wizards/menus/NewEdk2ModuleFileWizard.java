@@ -1,4 +1,4 @@
-package org.uefiide.wizards;
+package org.uefiide.wizards.menus;
 
 import java.io.File;
 import java.io.IOException;

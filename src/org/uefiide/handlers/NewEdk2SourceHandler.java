@@ -11,7 +11,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.uefiide.wizards.NewEdk2ModuleFileWizard;
+import org.uefiide.wizards.menus.NewEdk2ModuleFileWizard;
 
 public class NewEdk2SourceHandler implements IHandler {
 
