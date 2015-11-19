@@ -79,7 +79,7 @@ public class Edk2ModuleObservablesManager {
 		IFile infFile = (IFile) resource;
 		IFileState[] states = infFile.getHistory(null);
 		
-		if(states != null) {
+		if(states != null && states.length > 0) {
 			IFileState lastState = states[0];
 			oldModule = new Edk2Module(resource.getLocation().toString(), workspacePath, lastState.getContents());
 		}
