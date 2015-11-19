@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.wizard.Wizard;
 import org.uefiide.structures.Edk2Module;
-import org.uefiide.wizards.pages.NewEdk2ModuleFileWizardpage;
+import org.uefiide.wizards.menus.pages.NewEdk2ModuleFileWizardpage;
 
 public class NewEdk2ModuleFileWizard extends Wizard {
 	NewEdk2ModuleFileWizardpage page;

@@ -1,4 +1,4 @@
-package org.uefiide.wizards.pages;
+package org.uefiide.wizards.menus.pages;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
