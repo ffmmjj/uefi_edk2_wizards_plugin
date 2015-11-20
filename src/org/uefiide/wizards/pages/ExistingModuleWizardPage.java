@@ -74,7 +74,7 @@ public class ExistingModuleWizardPage extends WizardPage {
 		workspacePathBtn.setText("Browse");
 		workspacePathBtn.setBounds(395, 150, 80, 27);
 		workspacePathBtn.setEnabled(!detectWorkspaceFromModule);
-
+		
 		addListeners();
 
 		setControl(container);
