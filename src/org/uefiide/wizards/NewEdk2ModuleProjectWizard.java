@@ -48,7 +48,7 @@ public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IR
 
 		NewEdk2ModuleProjectCreator.CreateNewEdk2ModuleProject(
 				newModuleWizardPage.getNewModuleRootFolder(),
-				newModuleWizardPage.getNewModuleName() + ".inf",
+				newModuleWizardPage.getNewModuleName(),
 				workspacePath,
 				newModuleWizardPage.getSelectedModuleType(),
 				arg0);

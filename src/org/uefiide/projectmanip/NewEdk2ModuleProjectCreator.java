@@ -1,7 +1,5 @@
 package org.uefiide.projectmanip;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -17,19 +15,10 @@ public class NewEdk2ModuleProjectCreator {
 			Edk2ModuleType type, IProgressMonitor monitor) {
 		try {
 			IPath moduleFolderPath = new Path(moduleFolder);
-			IPath moduleLocationPath = moduleFolderPath.append(moduleName);
+			IPath moduleLocationPath = moduleFolderPath.append(moduleName + ".inf");
 			
-			File infRootFolder = new File(moduleFolderPath.toString());
-			if(!infRootFolder.exists()) {
-				infRootFolder.mkdirs();
-			}
-			
-			File infFile = new File(moduleLocationPath.toString());
-			infFile.createNewFile();
-			FileOutputStream fop = new FileOutputStream(infFile);
 			Edk2ModuleTemplate template = Edk2ModuleTemplate.get(type);
-			template.writeModuleTemplate(fop);
-			fop.close();
+			template.createModuleTemplate(moduleFolder, moduleName);
 			
 			Edk2Module projectModule = new Edk2Module(moduleLocationPath.toString(), workspace);
 			ExistingEdk2ModuleProjectCreator.CreateEDK2ProjectFromExistingModule(projectModule, monitor);
