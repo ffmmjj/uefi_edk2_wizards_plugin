@@ -63,7 +63,7 @@ public abstract class Edk2Element {
 		return this.contents;
 	}
 	
-	private static String inferWorkspaceFromElementPath(String elementPath) {
+	public static String inferWorkspaceFromElementPath(String elementPath) {
 		IPath currentDir = new Path(elementPath);
 		while(!currentDir.isEmpty()) {
 			IPath tentativeBaseTools = currentDir.append("BaseTools");

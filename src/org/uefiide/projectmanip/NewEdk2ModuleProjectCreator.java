@@ -14,7 +14,7 @@ import org.uefiide.structures.Edk2Module.Edk2ModuleType;
 
 public class NewEdk2ModuleProjectCreator {
 	public static void CreateNewEdk2ModuleProject(String moduleFolder, String moduleName, String workspace, 
-			IProgressMonitor monitor, Edk2ModuleType type) {
+			Edk2ModuleType type, IProgressMonitor monitor) {
 		try {
 			IPath moduleFolderPath = new Path(moduleFolder);
 			IPath moduleLocationPath = moduleFolderPath.append(moduleName);

@@ -9,6 +9,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.uefiide.projectmanip.NewEdk2ModuleProjectCreator;
+import org.uefiide.structures.Edk2Element;
 import org.uefiide.structures.Edk2Module.Edk2ModuleType;
 import org.uefiide.wizards.pages.ExistingModuleWizardPage;
 import org.uefiide.wizards.pages.NewEdk2ModuleProjectPage;
@@ -37,13 +38,20 @@ public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IR
 	@Override
 	public void run(IProgressMonitor arg0) throws InvocationTargetException, InterruptedException {
 		arg0.beginTask("Creating New EDK2 module project", 10);
+		
+		String workspacePath = null;
+		if(newModuleWizardPage.shouldInferWorkspacePath()) {
+			workspacePath = Edk2Element.inferWorkspaceFromElementPath(newModuleWizardPage.getNewModuleRootFolder());
+		} else {
+			workspacePath = newModuleWizardPage.getWorkspace();
+		}
 
 		NewEdk2ModuleProjectCreator.CreateNewEdk2ModuleProject(
-				newModuleWizardPage.getNewModuleRootFolder(), 
-				"TestModule.inf",
-				newModuleWizardPage.getWorkspace(),
-				arg0,
-				Edk2ModuleType.UEFI_APPLICATION);
+				newModuleWizardPage.getNewModuleRootFolder(),
+				newModuleWizardPage.getNewModuleName() + ".inf",
+				workspacePath,
+				newModuleWizardPage.getSelectedModuleType(),
+				arg0);
 
 		arg0.done();
 	}
