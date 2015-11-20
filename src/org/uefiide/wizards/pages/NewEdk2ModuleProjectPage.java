@@ -54,36 +54,12 @@ public class NewEdk2ModuleProjectPage extends WizardPage {
 	 * @param parent
 	 */
 	public void createControl(Composite parent) {
-		parent.setSize(900, 900);
 		Composite container = new Composite(parent, SWT.NULL);
 		container.setLayout(new GridLayout(1, false));
 
-		Label moduleRootLabel = new Label(parent, SWT.BORDER);
-		moduleRootLabel.setText("Enter the module's .inf location:");
-		Composite moduleRootContainer = new Composite(container, SWT.BORDER);
-		moduleRootContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		moduleRootContainer.setLayout(new GridLayout(2, false));
-		moduleRootFolder = new Text(moduleRootContainer,SWT.BOLD | SWT.BORDER);
-		moduleRootFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		moduleRootFolderBtn = new Button(moduleRootContainer,SWT.BORDER);
-		moduleRootFolderBtn.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		moduleRootFolderBtn.setText("Browse");
-
-		detectWorkspaceFromModuleBtn = new Button(container, SWT.CHECK);
-		detectWorkspaceFromModuleBtn.setText("Detect workspace from module path");
-		detectWorkspaceFromModuleBtn.setSelection(true);
-		detectWorkspaceFromModuleBtn.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				NewEdk2ModuleProjectPage.this.workspacePathLabel.setEnabled(!shouldInferWorkspacePath());
-				NewEdk2ModuleProjectPage.this.workspacePath.setEnabled(!shouldInferWorkspacePath());
-				NewEdk2ModuleProjectPage.this.workspacePathBtn.setEnabled(!shouldInferWorkspacePath());
-			}
-		});
-		
+		createModuleNameFormInput(container);
+		createModuleLocationFormInput(container);
 		createWorkspaceFormInput(container);
-		
 		createModuleTypeRadioGroup(container);
 	    
 		addListeners();
@@ -91,23 +67,60 @@ public class NewEdk2ModuleProjectPage extends WizardPage {
 		setControl(container);
 	}
 
+	private void createModuleNameFormInput(Composite container) {
+		Label moduleNameLabel = new Label(container, SWT.NULL);
+		moduleNameLabel.setText("Enter the module's name:");
+		
+		moduleName = new Text(container, SWT.BOLD | SWT.BORDER);
+		moduleName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+	}
+
+	private void createModuleLocationFormInput(Composite container) {
+		Label moduleRootLabel = new Label(container, SWT.NULL);
+		moduleRootLabel.setText("Enter the module's .inf location:");
+		
+		SashForm form = new SashForm(container, SWT.HORIZONTAL | SWT.NULL);
+		form.setLayout(new GridLayout(1, false));
+		form.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		form.setSashWidth(0);
+		
+		Composite moduleRootFolderTxtContainer = new Composite(form, SWT.NULL);
+		moduleRootFolderTxtContainer.setLayout(new GridLayout(1, false));
+		moduleRootFolderTxtContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		moduleRootFolder = new Text(moduleRootFolderTxtContainer, SWT.BOLD | SWT.BORDER);
+		moduleRootFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
+		Composite moduleRootFolderBtnContainer = new Composite(form, SWT.NULL);
+		moduleRootFolderBtnContainer.setLayout(new GridLayout(1, false));
+		moduleRootFolderBtnContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		moduleRootFolderBtn = new Button(moduleRootFolderBtnContainer, SWT.PUSH);
+		moduleRootFolderBtn.setText("Browse");
+		moduleRootFolderBtn.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
+		form.setWeights(new int[]{7, 1});
+	}
+
 	private void createWorkspaceFormInput(Composite container) {
-		workspacePathLabel = new Label(container, SWT.BORDER);
+		detectWorkspaceFromModuleBtn = new Button(container, SWT.CHECK);
+		detectWorkspaceFromModuleBtn.setText("Detect workspace from module path");
+		detectWorkspaceFromModuleBtn.setSelection(true);
+		
+		workspacePathLabel = new Label(container, SWT.NULL);
 		workspacePathLabel.setText("Enter the workspace path:");
 		workspacePathLabel.setEnabled(false);
 		
-		SashForm form = new SashForm(container, SWT.HORIZONTAL | SWT.BORDER);
+		SashForm form = new SashForm(container, SWT.HORIZONTAL | SWT.NULL);
 		form.setLayout(new GridLayout(1, false));
 		form.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
-		Composite workspacePathComposite = new Composite(form, SWT.BORDER);
+		Composite workspacePathComposite = new Composite(form, SWT.NULL);
 		workspacePathComposite.setLayout(new GridLayout(1, true));
 		workspacePathComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		workspacePath = new Text(workspacePathComposite, SWT.PUSH | SWT.BOLD | SWT.BORDER);
+		workspacePath = new Text(workspacePathComposite, SWT.BOLD | SWT.BORDER);
 		workspacePath.setEnabled(false);
 		workspacePath.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
-		Composite workspacePathBtnComposite = new Composite(form, SWT.BORDER);
+		Composite workspacePathBtnComposite = new Composite(form, SWT.NULL);
 		workspacePathBtnComposite.setLayout(new GridLayout());
 		workspacePathBtnComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		workspacePathBtn = new Button(workspacePathBtnComposite, SWT.PUSH);
@@ -121,7 +134,7 @@ public class NewEdk2ModuleProjectPage extends WizardPage {
 	private void createModuleTypeRadioGroup(Composite container) {
 		moduleTypeGroup = new Group(container, SWT.SHADOW_IN);
 		moduleTypeGroup.setText("Module type");
-		moduleTypeGroup.setLayout(new RowLayout(SWT.VERTICAL));
+		moduleTypeGroup.setLayout(new RowLayout(SWT.HORIZONTAL));
 	    UefiApplicationRadioBtn = new Button(moduleTypeGroup, SWT.RADIO);
 	    UefiApplicationRadioBtn.setText("UEFI Application");
 	    UefiStdLibApplicationRadioBtn = new Button(moduleTypeGroup, SWT.RADIO);
@@ -182,10 +195,22 @@ public class NewEdk2ModuleProjectPage extends WizardPage {
 
 			}
 		});
+		detectWorkspaceFromModuleBtn.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				NewEdk2ModuleProjectPage.this.workspacePathLabel.setEnabled(!shouldInferWorkspacePath());
+				NewEdk2ModuleProjectPage.this.workspacePath.setEnabled(!shouldInferWorkspacePath());
+				NewEdk2ModuleProjectPage.this.workspacePathBtn.setEnabled(!shouldInferWorkspacePath());
+			}
+		});
 	}
 	
 	public boolean shouldInferWorkspacePath() {
 		return this.detectWorkspaceFromModuleBtn.getSelection();
+	}
+	public String getNewModuleName() {
+		return moduleName.getText();
 	}
 	public String getNewModuleRootFolder(){
 		return moduleRootFolder.getText();
@@ -193,7 +218,6 @@ public class NewEdk2ModuleProjectPage extends WizardPage {
 	public String getWorkspace(){
 		return workspacePath.getText();
 	}
-	
 	public Edk2ModuleType getSelectedModuleType() {
 		for(Control child: moduleTypeGroup.getChildren()) {
 			Button childBtn = (Button) child;
