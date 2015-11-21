@@ -152,7 +152,6 @@ public class ExistingModuleWizardPage extends WizardPage implements ModifyListen
 				(new File(infLocationPath.getText()).exists());
 	}
 
-	@Override
 	public void modifyText(ModifyEvent e) {
 		setPageComplete(shouldEnableFinishButton());
 	}

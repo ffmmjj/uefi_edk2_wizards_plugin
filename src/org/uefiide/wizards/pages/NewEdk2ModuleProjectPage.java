@@ -1,8 +1,12 @@
 package org.uefiide.wizards.pages;
 
+import java.io.File;
+
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -23,7 +27,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Group;
 import org.uefiide.structures.Edk2Module.Edk2ModuleType;
 
-public class NewEdk2ModuleProjectPage extends WizardPage {
+public class NewEdk2ModuleProjectPage extends WizardPage implements ModifyListener {
 	Text moduleName;
 	Text moduleRootFolder;
 	Text workspacePath;
@@ -204,6 +208,8 @@ public class NewEdk2ModuleProjectPage extends WizardPage {
 				NewEdk2ModuleProjectPage.this.workspacePathBtn.setEnabled(!shouldInferWorkspacePath());
 			}
 		});
+		moduleName.addModifyListener(this);
+		moduleRootFolder.addModifyListener(this);
 	}
 	
 	public boolean shouldInferWorkspacePath() {
@@ -228,5 +234,17 @@ public class NewEdk2ModuleProjectPage extends WizardPage {
 		}
 		
 		return null;
+	}
+
+	private boolean shouldCompletePage() {
+		return 	!moduleName.getText().isEmpty() &&
+				!moduleRootFolder.getText().isEmpty() &&
+				(new File(moduleRootFolder.getText()).exists());
+	}
+	
+	@Override
+	public void modifyText(ModifyEvent e) {
+		this.setPageComplete(this.shouldCompletePage());
+		
 	}
 }

@@ -30,6 +30,7 @@ public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IR
 	public void addPages() {
 		super.addPages();
 		this.newModuleWizardPage = new NewEdk2ModuleProjectPage("New EDK2 Module Project");
+		newModuleWizardPage.setPageComplete(false);
 		addPage(newModuleWizardPage);
 	}
 	
