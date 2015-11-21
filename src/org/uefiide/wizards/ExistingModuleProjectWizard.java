@@ -45,6 +45,7 @@ public class ExistingModuleProjectWizard extends Wizard implements INewWizard, I
 	public void addPages() {
 		super.addPages();
 		this.existingModuleWizardPage = new ExistingModuleWizardPage("Existing EDK2 Module Project");
+		this.existingModuleWizardPage.setPageComplete(false);
 		addPage(existingModuleWizardPage);
 	}
 
@@ -85,6 +86,6 @@ public class ExistingModuleProjectWizard extends Wizard implements INewWizard, I
 
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-
+		
 	}
 }

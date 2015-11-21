@@ -1,8 +1,12 @@
 package org.uefiide.wizards.pages;
 
+import java.io.File;
+
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -14,7 +18,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class ExistingModuleWizardPage extends WizardPage {
+public class ExistingModuleWizardPage extends WizardPage implements ModifyListener {
 	private Button infBrowserBtn;
 	private Text infLocationPath;
 	private Button detectWorkspaceFromModuleBtn;
@@ -123,6 +127,8 @@ public class ExistingModuleWizardPage extends WizardPage {
 
 			}
 		});
+		
+		infLocationPath.addModifyListener(this);
 	}
 
 	public String getProjName(){
@@ -139,5 +145,15 @@ public class ExistingModuleWizardPage extends WizardPage {
 	
 	public String getWorkspacePath() {
 		return this.workspacePath.getText();
+	}
+	
+	private boolean shouldEnableFinishButton() {
+		return !infLocationPath.getText().isEmpty() &&
+				(new File(infLocationPath.getText()).exists());
+	}
+
+	@Override
+	public void modifyText(ModifyEvent e) {
+		setPageComplete(shouldEnableFinishButton());
 	}
 }

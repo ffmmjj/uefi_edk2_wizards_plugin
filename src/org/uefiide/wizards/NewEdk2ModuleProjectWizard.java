@@ -24,8 +24,6 @@ public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IR
 
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		// TODO Auto-generated method stub
-
 	}
 	
 	@Override
