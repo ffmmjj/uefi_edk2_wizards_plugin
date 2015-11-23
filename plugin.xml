@@ -53,10 +53,10 @@
    <extension
          point="org.eclipse.ui.startup">
       <startup
-            class="SetResourceChangeListenerStartup">
+            class="org.uefiide.startup.SetResourceChangeListenerStartup">
       </startup>
       <startup
-            class="SetDefaultEditorsStartup">
+            class="org.uefiide.startup.SetDefaultEditorsStartup">
       </startup>
    </extension>
 
