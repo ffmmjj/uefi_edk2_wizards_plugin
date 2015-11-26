@@ -2,6 +2,7 @@ package org.uefiide.wizards.pages;
 
 import java.io.File;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -179,8 +180,19 @@ public class ExistingModuleWizardPage extends WizardPage implements ModifyListen
 		return !infLocationPath.getText().isEmpty() &&
 				(new File(infLocationPath.getText()).exists());
 	}
+	
+	private boolean moduleDoesNotExist() {
+		IPath modulePath = new Path(infLocationPath.getText().toString());
+		return !(modulePath.toFile().exists());
+	}
 
 	public void modifyText(ModifyEvent e) {
-		setPageComplete(shouldEnableFinishButton());
+		this.setPageComplete(shouldEnableFinishButton());
+		
+		if(!infLocationPath.getText().toString().isEmpty() && moduleDoesNotExist()) {
+			this.setErrorMessage("The passed module does not exist!");
+		} else {
+			this.setErrorMessage(null);
+		}
 	}
 }
