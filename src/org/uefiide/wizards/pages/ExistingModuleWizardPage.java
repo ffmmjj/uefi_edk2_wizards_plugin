@@ -5,12 +5,15 @@ import java.io.File;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
@@ -34,54 +37,70 @@ public class ExistingModuleWizardPage extends WizardPage implements ModifyListen
 
 	@Override
 	public void createControl(Composite parent) {
-		//TODO use layouts instead of absolute positions
-		boolean detectWorkspaceFromModule = true;
-		
 		Composite container = new Composite(parent, SWT.NULL);
-		container.setBounds(15, 25, 300, 400);
+		container.setLayout(new GridLayout(1, false));
 
-		Label infPathLabel = new Label(container,SWT.NONE);
-		infPathLabel.setText("Enter the module's .inf location:");
-		infPathLabel.setBounds(50, 95, 150, 27);
-
-		infLocationPath = new Text(container,SWT.BOLD | SWT.BORDER);
-		infLocationPath.setBounds(220, 90, 170, 27);
-
-		infBrowserBtn = new Button(container,SWT.NONE);
-		infBrowserBtn.setText("Browse");
-		infBrowserBtn.setBounds(395, 90, 80, 27);
-		
-		detectWorkspaceFromModuleBtn = new Button(container, SWT.CHECK);
-		detectWorkspaceFromModuleBtn.setText("Detect workspace from module path");
-		detectWorkspaceFromModuleBtn.setBounds(50, 120, 350, 27);
-		detectWorkspaceFromModuleBtn.setSelection(detectWorkspaceFromModule);
-		detectWorkspaceFromModuleBtn.addSelectionListener(new SelectionAdapter() {
-			@Override
-		    public void widgetSelected(SelectionEvent e)
-		    {
-				ExistingModuleWizardPage.this.workspacePathLabel.setEnabled(!shouldInferWorkspacePath());
-				ExistingModuleWizardPage.this.workspacePath.setEnabled(!shouldInferWorkspacePath());
-				ExistingModuleWizardPage.this.workspacePathBtn.setEnabled(!shouldInferWorkspacePath());
-		    }
-		});
-		
-		workspacePathLabel = new Label(container,SWT.NONE);
-		workspacePathLabel.setText("Enter the workspace path:");
-		workspacePathLabel.setBounds(30, 160 ,185, 27);
-		workspacePathLabel.setEnabled(!detectWorkspaceFromModule);
-		
-		workspacePath = new Text(container,SWT.BOLD | SWT.BORDER);
-		workspacePath.setBounds(220, 150, 170, 27);
-		workspacePath.setEnabled(!detectWorkspaceFromModule);
-
-		workspacePathBtn = new Button(container,SWT.NONE);
-		workspacePathBtn.setText("Browse");
-		workspacePathBtn.setBounds(395, 150, 80, 27);
-		workspacePathBtn.setEnabled(!detectWorkspaceFromModule);
-		
+		createModuleLocationFormInput(container);
+		createWorkspaceFormInput(container);
 		addListeners();
 
 		setControl(container);
+	}
+	
+	private void createModuleLocationFormInput(Composite container) {
+		Label infPathLabel = new Label(container, SWT.NULL);
+		infPathLabel.setText("Enter the module's .inf location:");
+		
+		SashForm form = new SashForm(container, SWT.HORIZONTAL | SWT.NULL);
+		form.setLayout(new GridLayout(1, false));
+		form.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		form.setSashWidth(0);
+		
+		Composite infLocationPathContainer = new Composite(form, SWT.NULL);
+		infLocationPathContainer.setLayout(new GridLayout(1, false));
+		infLocationPathContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		infLocationPath = new Text(infLocationPathContainer, SWT.BOLD | SWT.BORDER);
+		infLocationPath.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		
+		Composite infBrowserBtnContainer = new Composite(form, SWT.NULL);
+		infBrowserBtnContainer.setLayout(new GridLayout(1, false));
+		infBrowserBtnContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		infBrowserBtn = new Button(infBrowserBtnContainer, SWT.PUSH);
+		infBrowserBtn.setText("Browse");
+		infBrowserBtn.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		
+		form.setWeights(new int[]{7, 1});
+	}
+	
+	private void createWorkspaceFormInput(Composite container) {
+		detectWorkspaceFromModuleBtn = new Button(container, SWT.CHECK);
+		detectWorkspaceFromModuleBtn.setText("Detect workspace from module path");
+		detectWorkspaceFromModuleBtn.setSelection(true);
+		
+		workspacePathLabel = new Label(container, SWT.NULL);
+		workspacePathLabel.setText("Enter the workspace path:");
+		workspacePathLabel.setEnabled(false);
+		
+		SashForm form = new SashForm(container, SWT.HORIZONTAL | SWT.NULL);
+		form.setLayout(new GridLayout(1, false));
+		form.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		
+		Composite workspacePathComposite = new Composite(form, SWT.NULL);
+		workspacePathComposite.setLayout(new GridLayout(1, true));
+		workspacePathComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		workspacePath = new Text(workspacePathComposite, SWT.BOLD | SWT.BORDER);
+		workspacePath.setEnabled(false);
+		workspacePath.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		
+		Composite workspacePathBtnComposite = new Composite(form, SWT.NULL);
+		workspacePathBtnComposite.setLayout(new GridLayout());
+		workspacePathBtnComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		workspacePathBtn = new Button(workspacePathBtnComposite, SWT.PUSH);
+		workspacePathBtn.setText("Browse");
+		workspacePathBtn.setEnabled(false);
+		workspacePathBtn.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		
+		form.setWeights(new int[]{7, 1});
 	}
 
 	private void addListeners() {
@@ -125,6 +144,15 @@ public class ExistingModuleWizardPage extends WizardPage implements ModifyListen
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 
+			}
+		});
+		detectWorkspaceFromModuleBtn.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				ExistingModuleWizardPage.this.workspacePathLabel.setEnabled(!shouldInferWorkspacePath());
+				ExistingModuleWizardPage.this.workspacePath.setEnabled(!shouldInferWorkspacePath());
+				ExistingModuleWizardPage.this.workspacePathBtn.setEnabled(!shouldInferWorkspacePath());
 			}
 		});
 		

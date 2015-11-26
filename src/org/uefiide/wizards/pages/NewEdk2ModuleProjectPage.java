@@ -78,7 +78,7 @@ public class NewEdk2ModuleProjectPage extends WizardPage implements ModifyListen
 		moduleNameLabel.setText("Enter the module's name:");
 		
 		moduleName = new Text(container, SWT.BOLD | SWT.BORDER);
-		moduleName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		moduleName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 	}
 
 	private void createModuleLocationFormInput(Composite container) {
@@ -87,21 +87,21 @@ public class NewEdk2ModuleProjectPage extends WizardPage implements ModifyListen
 		
 		SashForm form = new SashForm(container, SWT.HORIZONTAL | SWT.NULL);
 		form.setLayout(new GridLayout(1, false));
-		form.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		form.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		form.setSashWidth(0);
 		
 		Composite moduleRootFolderTxtContainer = new Composite(form, SWT.NULL);
 		moduleRootFolderTxtContainer.setLayout(new GridLayout(1, false));
-		moduleRootFolderTxtContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		moduleRootFolderTxtContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		moduleRootFolder = new Text(moduleRootFolderTxtContainer, SWT.BOLD | SWT.BORDER);
-		moduleRootFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		moduleRootFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		
 		Composite moduleRootFolderBtnContainer = new Composite(form, SWT.NULL);
 		moduleRootFolderBtnContainer.setLayout(new GridLayout(1, false));
-		moduleRootFolderBtnContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		moduleRootFolderBtnContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		moduleRootFolderBtn = new Button(moduleRootFolderBtnContainer, SWT.PUSH);
 		moduleRootFolderBtn.setText("Browse");
-		moduleRootFolderBtn.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		moduleRootFolderBtn.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		
 		form.setWeights(new int[]{7, 1});
 	}
@@ -117,22 +117,22 @@ public class NewEdk2ModuleProjectPage extends WizardPage implements ModifyListen
 		
 		SashForm form = new SashForm(container, SWT.HORIZONTAL | SWT.NULL);
 		form.setLayout(new GridLayout(1, false));
-		form.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		form.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		
 		Composite workspacePathComposite = new Composite(form, SWT.NULL);
 		workspacePathComposite.setLayout(new GridLayout(1, true));
-		workspacePathComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		workspacePathComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		workspacePath = new Text(workspacePathComposite, SWT.BOLD | SWT.BORDER);
 		workspacePath.setEnabled(false);
-		workspacePath.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		workspacePath.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		
 		Composite workspacePathBtnComposite = new Composite(form, SWT.NULL);
 		workspacePathBtnComposite.setLayout(new GridLayout());
-		workspacePathBtnComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		workspacePathBtnComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		workspacePathBtn = new Button(workspacePathBtnComposite, SWT.PUSH);
 		workspacePathBtn.setText("Browse");
 		workspacePathBtn.setEnabled(false);
-		workspacePathBtn.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		workspacePathBtn.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		
 		form.setWeights(new int[]{7, 1});
 	}
