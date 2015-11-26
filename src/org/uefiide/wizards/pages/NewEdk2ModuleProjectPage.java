@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -13,6 +14,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -212,6 +214,19 @@ public class NewEdk2ModuleProjectPage extends WizardPage implements ModifyListen
 		});
 		moduleName.addModifyListener(this);
 		moduleRootFolder.addModifyListener(this);
+		UefiLibraryRadioBtn.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				NewEdk2ModuleProjectPage.this.setPageComplete(NewEdk2ModuleProjectPage.this.shouldCompletePage() && UefiLibraryRadioBtn.getSelection());
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 	
 	public boolean shouldInferWorkspacePath() {
@@ -267,5 +282,22 @@ public class NewEdk2ModuleProjectPage extends WizardPage implements ModifyListen
 		} else {
 			this.setErrorMessage(null);
 		}
+	}
+	
+	@Override
+	public boolean canFlipToNextPage() {
+		return shouldCompletePage() && UefiLibraryRadioBtn.getSelection();
+	};
+	
+	@Override
+	public IWizardPage getNextPage() {
+		if(UefiLibraryRadioBtn.getSelection()) {
+			NewLibraryClassProjectPage newPage = new NewLibraryClassProjectPage();
+			newPage.setWizard(this.getWizard());;
+			
+			return newPage;
+		}
+		
+		return null;
 	}
 }
