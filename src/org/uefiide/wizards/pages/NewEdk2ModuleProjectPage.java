@@ -2,6 +2,8 @@ package org.uefiide.wizards.pages;
 
 import java.io.File;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -236,15 +238,34 @@ public class NewEdk2ModuleProjectPage extends WizardPage implements ModifyListen
 		return null;
 	}
 
+	private boolean moduleRootFolderExists() {
+		return (new File(moduleRootFolder.getText()).exists()); 
+	}
+	
+	private boolean moduleAlreadyExists() {
+		IPath modulePath = new Path(moduleRootFolder.getText()).append(moduleName.getText() + ".inf");
+		return modulePath.toFile().exists();
+	}
+	
 	private boolean shouldCompletePage() {
 		return 	!moduleName.getText().isEmpty() &&
 				!moduleRootFolder.getText().isEmpty() &&
-				(new File(moduleRootFolder.getText()).exists());
+				moduleRootFolderExists() && 
+				!moduleAlreadyExists();
 	}
 	
 	@Override
 	public void modifyText(ModifyEvent e) {
 		this.setPageComplete(this.shouldCompletePage());
 		
+		if(moduleRootFolder.getText().isEmpty()) {
+			this.setErrorMessage(null);
+		} else if(!moduleRootFolderExists()) {
+			this.setErrorMessage("The selected module location does not exist.");
+		} else if(!moduleName.getText().isEmpty() && moduleAlreadyExists()) {
+			this.setErrorMessage("A module with the same name already exists in the selected root folder.");
+		} else {
+			this.setErrorMessage(null);
+		}
 	}
 }
