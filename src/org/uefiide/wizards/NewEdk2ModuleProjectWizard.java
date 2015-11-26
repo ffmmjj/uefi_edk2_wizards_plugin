@@ -8,15 +8,18 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.internal.operations.AdvancedValidationUserApprover;
 import org.uefiide.projectmanip.NewEdk2ModuleProjectCreator;
 import org.uefiide.structures.Edk2Element;
 import org.uefiide.structures.Edk2Module.Edk2ModuleType;
 import org.uefiide.wizards.pages.ExistingModuleWizardPage;
 import org.uefiide.wizards.pages.NewEdk2ModuleProjectPage;
+import org.uefiide.wizards.pages.NewLibraryClassProjectPage;
 
 public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IRunnableWithProgress {
 
 	private NewEdk2ModuleProjectPage newModuleWizardPage;
+	private NewLibraryClassProjectPage libraryClassPage; 
 	
 	public NewEdk2ModuleProjectWizard() {
 		super();
@@ -32,6 +35,10 @@ public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IR
 		this.newModuleWizardPage = new NewEdk2ModuleProjectPage("New EDK2 Module Project");
 		newModuleWizardPage.setPageComplete(false);
 		addPage(newModuleWizardPage);
+		
+		this.libraryClassPage = new NewLibraryClassProjectPage();
+		newModuleWizardPage.setPageComplete(false);
+		addPage(libraryClassPage);
 	}
 	
 	@Override

@@ -223,8 +223,6 @@ public class NewEdk2ModuleProjectPage extends WizardPage implements ModifyListen
 			
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 		});
 	}
@@ -288,16 +286,4 @@ public class NewEdk2ModuleProjectPage extends WizardPage implements ModifyListen
 	public boolean canFlipToNextPage() {
 		return shouldCompletePage() && UefiLibraryRadioBtn.getSelection();
 	};
-	
-	@Override
-	public IWizardPage getNextPage() {
-		if(UefiLibraryRadioBtn.getSelection()) {
-			NewLibraryClassProjectPage newPage = new NewLibraryClassProjectPage();
-			newPage.setWizard(this.getWizard());;
-			
-			return newPage;
-		}
-		
-		return null;
-	}
 }
