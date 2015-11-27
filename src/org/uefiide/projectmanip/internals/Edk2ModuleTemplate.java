@@ -2,24 +2,36 @@ package org.uefiide.projectmanip.internals;
 
 import java.io.IOException;
 
+import org.uefiide.projectmanip.ModuleProjectCreationContext;
+import org.uefiide.projectmanip.internals.templates.Edk2LibraryClassImplementationTemplate;
 import org.uefiide.projectmanip.internals.templates.Edk2UefiApplicationTemplate;
 import org.uefiide.structures.Edk2Module.Edk2ModuleType;
 
 public abstract class Edk2ModuleTemplate {
-	public void createModuleTemplate(String moduleLocation, String moduleName) throws IOException {
-		writeSourcesTemplate(moduleLocation, moduleName);
-		writeModuleTemplate(moduleLocation, moduleName);
+	protected ModuleProjectCreationContext context;
+	
+	public Edk2ModuleTemplate(ModuleProjectCreationContext context) {
+		this.context = context;
 	}
 	
-	public abstract void writeModuleTemplate(String moduleLocation, String moduleName) throws IOException;
-	public abstract void writeSourcesTemplate(String moduleLocation, String moduleName) throws IOException;
+	public void createModuleTemplate() throws IOException {
+		writeSourcesTemplate();
+		writeModuleTemplate();
+	}
 	
-	public static Edk2ModuleTemplate get(Edk2ModuleType type) {
+	public abstract void writeModuleTemplate() throws IOException;
+	public abstract void writeSourcesTemplate() throws IOException;
+	
+	public static Edk2ModuleTemplate get(Edk2ModuleType type, ModuleProjectCreationContext context) {
 		Edk2ModuleTemplate moduleTemplate = null;
 		
 		switch(type) {
 		case UEFI_APPLICATION:
-			moduleTemplate = Edk2UefiApplicationTemplate.instance();
+			moduleTemplate = new Edk2UefiApplicationTemplate(context);
+			break;
+			
+		case LIBRARY_CLASS_IMPLEMENTATION:
+			moduleTemplate = new Edk2LibraryClassImplementationTemplate(context);
 			break;
 		}
 		

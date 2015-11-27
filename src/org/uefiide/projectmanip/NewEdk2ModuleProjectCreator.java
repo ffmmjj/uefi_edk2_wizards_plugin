@@ -11,14 +11,18 @@ import org.uefiide.structures.Edk2Module;
 import org.uefiide.structures.Edk2Module.Edk2ModuleType;
 
 public class NewEdk2ModuleProjectCreator {
-	public static void CreateNewEdk2ModuleProject(String moduleFolder, String moduleName, String workspace, 
-			Edk2ModuleType type, IProgressMonitor monitor) {
+	public static void CreateNewEdk2ModuleProject(ModuleProjectCreationContext context, IProgressMonitor monitor) {
+		String moduleFolder = context.getModuleLocation();
+		String moduleName = context.getModuleName();
+		Edk2ModuleType type = context.getModuleType();
+		String workspace = context.getWorkspaceLocation();
+		
 		try {
 			IPath moduleFolderPath = new Path(moduleFolder);
 			IPath moduleLocationPath = moduleFolderPath.append(moduleName + ".inf");
 			
-			Edk2ModuleTemplate template = Edk2ModuleTemplate.get(type);
-			template.createModuleTemplate(moduleFolder, moduleName);
+			Edk2ModuleTemplate template = Edk2ModuleTemplate.get(type, context);
+			template.createModuleTemplate();
 			
 			Edk2Module projectModule = new Edk2Module(moduleLocationPath.toString(), workspace);
 			ExistingEdk2ModuleProjectCreator.CreateEDK2ProjectFromExistingModule(projectModule, monitor);

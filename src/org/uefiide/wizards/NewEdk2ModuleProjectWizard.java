@@ -9,6 +9,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.internal.operations.AdvancedValidationUserApprover;
+import org.uefiide.projectmanip.ModuleProjectCreationContext;
 import org.uefiide.projectmanip.NewEdk2ModuleProjectCreator;
 import org.uefiide.structures.Edk2Element;
 import org.uefiide.structures.Edk2Module.Edk2ModuleType;
@@ -51,14 +52,24 @@ public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IR
 		} else {
 			workspacePath = newModuleWizardPage.getWorkspace();
 		}
-
-		NewEdk2ModuleProjectCreator.CreateNewEdk2ModuleProject(
+		
+		String libraryClassName = null;
+		String libraryClassHeaderLocation = null;
+		if(newModuleWizardPage.getSelectedModuleType() == Edk2ModuleType.LIBRARY_CLASS_IMPLEMENTATION) {
+			libraryClassName = libraryClassPage.GetLibraryClassName();
+			libraryClassHeaderLocation = libraryClassPage.GetLibraryClassHeaderPath();
+		}
+		
+		ModuleProjectCreationContext context = new ModuleProjectCreationContext(
+				newModuleWizardPage.getNewModuleName(), 
 				newModuleWizardPage.getNewModuleRootFolder(),
-				newModuleWizardPage.getNewModuleName(),
 				workspacePath,
 				newModuleWizardPage.getSelectedModuleType(),
-				arg0);
-
+				libraryClassName,
+				libraryClassHeaderLocation
+				);
+				
+		NewEdk2ModuleProjectCreator.CreateNewEdk2ModuleProject(context, arg0);
 		arg0.done();
 	}
 

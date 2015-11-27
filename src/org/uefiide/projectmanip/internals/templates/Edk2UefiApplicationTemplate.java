@@ -6,13 +6,19 @@ import java.io.IOException;
 import java.util.UUID;
 
 import org.eclipse.core.runtime.Path;
+import org.uefiide.projectmanip.ModuleProjectCreationContext;
 import org.uefiide.projectmanip.internals.Edk2ModuleTemplate;
 
 public class Edk2UefiApplicationTemplate extends Edk2ModuleTemplate {
-	private static Edk2UefiApplicationTemplate instance = null;
+	
+	public Edk2UefiApplicationTemplate(ModuleProjectCreationContext context) {
+		super(context);
+	}
 	
 	@Override
-	public void writeModuleTemplate(String moduleLocation, String moduleName) throws IOException {
+	public void writeModuleTemplate() throws IOException {
+		String moduleLocation = context.getModuleLocation();
+		String moduleName = context.getModuleName();
 		File infFile = new File(new Path(moduleLocation).append(moduleName + ".inf").toString());
 		FileOutputStream writer = new FileOutputStream(infFile);
 		
@@ -40,7 +46,9 @@ public class Edk2UefiApplicationTemplate extends Edk2ModuleTemplate {
 	}
 
 	@Override
-	public void writeSourcesTemplate(String moduleLocation, String moduleName) throws IOException {
+	public void writeSourcesTemplate() throws IOException {
+		String moduleLocation = context.getModuleLocation();
+		String moduleName = context.getModuleName();
 		File appSource = new File(new Path(moduleLocation).append(moduleName + ".c").toString());
 		FileOutputStream writer = new FileOutputStream(appSource);
 		
@@ -66,15 +74,5 @@ public class Edk2UefiApplicationTemplate extends Edk2ModuleTemplate {
 		writer.write("}\n".getBytes());
 		
 		writer.close();
-	}
-
-	public static Edk2UefiApplicationTemplate instance() {
-		if(instance == null) {
-			instance = new Edk2UefiApplicationTemplate();
-		}
-		return instance;
-	}
-
-	private Edk2UefiApplicationTemplate() {
 	}
 }
