@@ -40,7 +40,6 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.uefiide.events.Edk2ModuleObservablesManager;
 import org.uefiide.events.Edk2ModuleObservablesManager.Edk2ModuleChangeEvent;
-import org.uefiide.projectmanip.internals.ProjectBuildConfigManager;
 import org.uefiide.projectmanip.internals.ProjectSettingsManager;
 import org.uefiide.structures.Edk2Module;
 import org.uefiide.structures.Edk2Package;
@@ -70,8 +69,6 @@ public class ExistingEdk2ModuleProjectCreator {
 
 		monitor.beginTask("Parsing include paths", 65);
 		updateIncludePaths(newProjectHandle, module);
-
-		ProjectBuildConfigManager.setEDK2BuildCommands(newProjectHandle, null);
 
 		monitor.beginTask("Saving EDK2 project properties", 95);
 
