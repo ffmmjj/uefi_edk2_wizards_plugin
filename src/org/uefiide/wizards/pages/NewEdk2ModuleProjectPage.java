@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -284,6 +285,18 @@ public class NewEdk2ModuleProjectPage extends WizardPage implements ModifyListen
 	
 	@Override
 	public boolean canFlipToNextPage() {
-		return shouldCompletePage() && UefiLibraryRadioBtn.getSelection();
+		return 	shouldCompletePage() && 
+				(UefiLibraryRadioBtn.getSelection() || UefiDriverApplicationRadioBtn.getSelection());
 	};
+	
+	@Override
+	public IWizardPage getNextPage() {
+		if(UefiDriverApplicationRadioBtn.getSelection()) {
+			return this.getWizard().getPage("UefiDriverPage");
+		} else if(UefiLibraryRadioBtn.getSelection()){
+			return this.getWizard().getPage("NewLibraryClassPage");
+		}
+		
+		return null;
+	}
 }

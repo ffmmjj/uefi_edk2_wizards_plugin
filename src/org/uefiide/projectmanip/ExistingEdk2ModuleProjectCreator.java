@@ -1,7 +1,6 @@
 package org.uefiide.projectmanip;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -26,9 +25,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
@@ -39,14 +35,9 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.uefiide.events.Edk2ModuleObservablesManager;
-import org.uefiide.events.Edk2ModuleObservablesManager.Edk2ModuleChangeEvent;
 import org.uefiide.projectmanip.internals.ProjectSettingsManager;
 import org.uefiide.structures.Edk2Module;
 import org.uefiide.structures.Edk2Package;
-
-import rx.Observer;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 public class ExistingEdk2ModuleProjectCreator {
 

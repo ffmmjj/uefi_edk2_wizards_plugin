@@ -16,11 +16,13 @@ import org.uefiide.structures.Edk2Module.Edk2ModuleType;
 import org.uefiide.wizards.pages.ExistingModuleWizardPage;
 import org.uefiide.wizards.pages.NewEdk2ModuleProjectPage;
 import org.uefiide.wizards.pages.NewLibraryClassProjectPage;
+import org.uefiide.wizards.pages.NewUefiDriverProjectPage;
 
 public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IRunnableWithProgress {
 
 	private NewEdk2ModuleProjectPage newModuleWizardPage;
-	private NewLibraryClassProjectPage libraryClassPage; 
+	private NewLibraryClassProjectPage libraryClassPage;
+	private NewUefiDriverProjectPage uefiDriverPage;
 	
 	public NewEdk2ModuleProjectWizard() {
 		super();
@@ -40,6 +42,10 @@ public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IR
 		this.libraryClassPage = new NewLibraryClassProjectPage();
 		newModuleWizardPage.setPageComplete(false);
 		addPage(libraryClassPage);
+		
+		uefiDriverPage = new NewUefiDriverProjectPage();
+		uefiDriverPage.setPageComplete(false);
+		addPage(uefiDriverPage);
 	}
 	
 	@Override
