@@ -37,7 +37,7 @@ public class NewUefiDriverProjectPage extends WizardPage {
 		btnDriverFollowsUefi.setText("Driver follows UEFI Driver Model?");
 	}
 	
-	public boolean FollowsUefiDriverModel() {
+	public boolean followsUefiDriverModel() {
 		return btnDriverFollowsUefi.getSelection();
 	}
 }

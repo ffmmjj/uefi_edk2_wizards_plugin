@@ -1,8 +1,11 @@
 package org.uefiide.wizards.pages;
 
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -10,7 +13,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Button;
 
-public class NewLibraryClassProjectPage extends WizardPage {
+public class NewLibraryClassProjectPage extends WizardPage implements ModifyListener{
 	Text libraryClassName;
 	Text libraryClassHeaderPath;
 	Button libraryClassHeaderPathBtn;
@@ -28,9 +31,16 @@ public class NewLibraryClassProjectPage extends WizardPage {
 		createLibraryClassNameFormInput(container);
 		createLibraryClassHeaderPathFormInput(container);
 		
+		addListeners();
+		
 		setControl(container);
 	}
 	
+	private void addListeners() {
+		libraryClassName.addModifyListener(this);
+		libraryClassHeaderPath.addModifyListener(this);
+	}
+
 	private void createLibraryClassHeaderPathFormInput(Composite container) {
 		Label moduleRootLabel = new Label(container, SWT.NULL);
 		moduleRootLabel.setText("Enter the library class header location:");
@@ -71,5 +81,15 @@ public class NewLibraryClassProjectPage extends WizardPage {
 	
 	public String GetLibraryClassHeaderPath() {
 		return libraryClassHeaderPath.getText();
+	}
+
+	@Override
+	public void modifyText(ModifyEvent e) {
+		this.setPageComplete(!(libraryClassName.getText().isEmpty() || libraryClassHeaderPath.getText().isEmpty()));
+	}
+	
+	@Override
+	public IWizardPage getNextPage() {
+		return null;
 	}
 }

@@ -11,8 +11,11 @@ public class ModuleProjectCreationContext {
 	String libraryClassName;
 	String libraryClassHeaderLocation;
 	
+	boolean followsUefiDriverModel;
+	
 	public ModuleProjectCreationContext(String moduleName, String moduleLocation, String workspaceLocation, 
-			Edk2ModuleType type, String libraryClassName, String libraryClassHeaderLocation) {
+			Edk2ModuleType type, String libraryClassName, String libraryClassHeaderLocation,
+			boolean followsUefiDriverModel) {
 		this.moduleName = moduleName;
 		this.moduleLocation = moduleLocation;
 		this.workspaceLocation = workspaceLocation;
@@ -20,6 +23,8 @@ public class ModuleProjectCreationContext {
 		
 		this.libraryClassName = libraryClassName;
 		this.libraryClassHeaderLocation = libraryClassHeaderLocation;
+		
+		this.followsUefiDriverModel = followsUefiDriverModel;
 	}
 	
 	public String getModuleName() {
@@ -44,5 +49,9 @@ public class ModuleProjectCreationContext {
 	
 	public String getLibraryClassHeaderLocation() {
 		return this.libraryClassHeaderLocation;
+	}
+	
+	public boolean followsUefiDriverModel() {
+		return this.followsUefiDriverModel;
 	}
 }

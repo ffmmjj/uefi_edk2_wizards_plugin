@@ -216,10 +216,23 @@ public class NewEdk2ModuleProjectPage extends WizardPage implements ModifyListen
 		moduleName.addModifyListener(this);
 		moduleRootFolder.addModifyListener(this);
 		UefiLibraryRadioBtn.addSelectionListener(new SelectionListener() {
-			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				NewEdk2ModuleProjectPage.this.setPageComplete(NewEdk2ModuleProjectPage.this.shouldCompletePage() && UefiLibraryRadioBtn.getSelection());
+				if(UefiLibraryRadioBtn.getSelection()) {
+					NewEdk2ModuleProjectPage.this.getContainer().updateButtons();
+				}
+				
+//				NewEdk2ModuleProjectPage.this.setPageComplete(UefiLibraryRadioBtn.getSelection() && NewEdk2ModuleProjectPage.this.shouldCompletePage());
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+		});
+		UefiDriverApplicationRadioBtn.addSelectionListener(new SelectionListener() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				NewEdk2ModuleProjectPage.this.setPageComplete(UefiDriverApplicationRadioBtn.getSelection() && NewEdk2ModuleProjectPage.this.shouldCompletePage());
 			}
 			
 			@Override
@@ -258,14 +271,21 @@ public class NewEdk2ModuleProjectPage extends WizardPage implements ModifyListen
 	
 	private boolean moduleAlreadyExists() {
 		IPath modulePath = new Path(moduleRootFolder.getText()).append(moduleName.getText() + ".inf");
-		return modulePath.toFile().exists();
+		boolean result = modulePath.toFile().exists();
+		return result;
+		//return modulePath.toFile().exists();
 	}
 	
 	private boolean shouldCompletePage() {
-		return 	!moduleName.getText().isEmpty() &&
+		boolean result = !moduleName.getText().isEmpty() &&
 				!moduleRootFolder.getText().isEmpty() &&
 				moduleRootFolderExists() && 
 				!moduleAlreadyExists();
+		return result;
+		/*return 	!moduleName.getText().isEmpty() &&
+				!moduleRootFolder.getText().isEmpty() &&
+				moduleRootFolderExists() && 
+				!moduleAlreadyExists();*/
 	}
 	
 	@Override

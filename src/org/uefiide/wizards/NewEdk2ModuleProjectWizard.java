@@ -44,7 +44,6 @@ public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IR
 		addPage(libraryClassPage);
 		
 		uefiDriverPage = new NewUefiDriverProjectPage();
-		uefiDriverPage.setPageComplete(false);
 		addPage(uefiDriverPage);
 	}
 	
@@ -61,9 +60,21 @@ public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IR
 		
 		String libraryClassName = null;
 		String libraryClassHeaderLocation = null;
-		if(newModuleWizardPage.getSelectedModuleType() == Edk2ModuleType.LIBRARY_CLASS_IMPLEMENTATION) {
+		boolean followsUefiDriverModel = false;
+		switch(newModuleWizardPage.getSelectedModuleType()) {
+		case LIBRARY_CLASS_IMPLEMENTATION:
 			libraryClassName = libraryClassPage.GetLibraryClassName();
 			libraryClassHeaderLocation = libraryClassPage.GetLibraryClassHeaderPath();
+			break;
+			
+		case UEFI_DRIVER:
+			followsUefiDriverModel = uefiDriverPage.followsUefiDriverModel();
+			break;
+			
+		case UEFI_APPLICATION:
+		case UEFI_STDLIB_APPLICATION:
+		default:
+			break;
 		}
 		
 		ModuleProjectCreationContext context = new ModuleProjectCreationContext(
@@ -72,7 +83,8 @@ public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IR
 				workspacePath,
 				newModuleWizardPage.getSelectedModuleType(),
 				libraryClassName,
-				libraryClassHeaderLocation
+				libraryClassHeaderLocation,
+				followsUefiDriverModel
 				);
 				
 		NewEdk2ModuleProjectCreator.CreateNewEdk2ModuleProject(context, arg0);
