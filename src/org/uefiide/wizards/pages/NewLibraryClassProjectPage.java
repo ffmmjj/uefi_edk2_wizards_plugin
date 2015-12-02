@@ -6,14 +6,18 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Button;
 
-public class NewLibraryClassProjectPage extends WizardPage implements ModifyListener{
+public class NewLibraryClassProjectPage extends WizardPage implements ModifyListener, MouseListener {
 	Text libraryClassName;
 	Text libraryClassHeaderPath;
 	Button libraryClassHeaderPathBtn;
@@ -39,6 +43,7 @@ public class NewLibraryClassProjectPage extends WizardPage implements ModifyList
 	private void addListeners() {
 		libraryClassName.addModifyListener(this);
 		libraryClassHeaderPath.addModifyListener(this);
+		libraryClassHeaderPathBtn.addMouseListener(this);
 	}
 
 	private void createLibraryClassHeaderPathFormInput(Composite container) {
@@ -91,5 +96,27 @@ public class NewLibraryClassProjectPage extends WizardPage implements ModifyList
 	@Override
 	public IWizardPage getNextPage() {
 		return null;
+	}
+
+	@Override
+	public void mouseDoubleClick(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseDown(MouseEvent e) {
+		FileDialog fileDialog = new FileDialog(libraryClassHeaderPathBtn.getShell());
+		fileDialog.setText("Select the header file corresponding to this library class");
+		String path = fileDialog.open();
+		if(path != null) {
+			libraryClassHeaderPath.setText(path);
+		}
+	}
+
+	@Override
+	public void mouseUp(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
