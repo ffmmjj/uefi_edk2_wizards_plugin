@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.uefiide.projectmanip.ModuleProjectCreationContext;
 import org.uefiide.projectmanip.internals.Edk2ModuleTemplate;

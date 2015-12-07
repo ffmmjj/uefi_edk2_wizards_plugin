@@ -13,7 +13,6 @@ import org.uefiide.events.internals.Edk2ModuleChangeEvent;
 import org.uefiide.structures.Edk2Module;
 
 import rx.Observable;
-import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 
 

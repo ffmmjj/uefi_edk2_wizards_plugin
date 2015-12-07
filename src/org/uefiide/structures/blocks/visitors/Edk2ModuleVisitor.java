@@ -1,10 +1,8 @@
 package org.uefiide.structures.blocks.visitors;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.uefiide.structures.Edk2Package;
 import org.uefiide.structures.blocks.DefinitionsBlock;
 import org.uefiide.structures.blocks.PackagesBlock;
 import org.uefiide.structures.blocks.SourcesBlock;
