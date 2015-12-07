@@ -1,9 +1,7 @@
 package org.uefiide.utilities.parsers;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -11,10 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.uefiide.structures.Edk2Module;
-import org.uefiide.structures.Edk2Package;
 import org.uefiide.structures.blocks.CommentBlock;
 import org.uefiide.structures.blocks.Edk2ElementBlock;
 import org.uefiide.structures.blocks.Edk2ElementBlockFactory;
@@ -22,7 +17,6 @@ import org.uefiide.structures.blocks.visitors.Edk2ElementBlockVisitor;
 import org.uefiide.structures.blocks.visitors.Edk2ModuleVisitor;
 
 public class ModuleInfParser {
-	private Edk2Module module;
 	List<Edk2ElementBlock> rawBlocks;
 	private List<String> sources = new LinkedList<String>();
 	private List<String> packages = new LinkedList<String>();
@@ -50,7 +44,6 @@ public class ModuleInfParser {
 	
 	
 	public ModuleInfParser(Edk2Module module) throws IOException, FileNotFoundException {
-		this.module = module;
 		parseModule(module);
 	}
 	

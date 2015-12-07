@@ -8,15 +8,25 @@ public class Edk2ElementBlockFactory {
 		case "[defines]":
 			block = new DefinitionsBlock();
 			break;
+			
 		case "[sources]":
+		case "[sources.common]":
+		case "[sources.x64]":
 			block = new SourcesBlock();
 			break;
+			
 		case "[packages]":
+		case "[packages.common]":
+		case "[packages.x64]":
 			block = new PackagesBlock();
 			break;
+			
 		case "[libraryclasses]":
+		case "[libraryclasses.common]":
+		case "[libraryclasses.x64]":
 			block = new LibraryClassesBlock();
 			break;
+			
 		default:
 			block = new UnknownBlock();
 			break;
