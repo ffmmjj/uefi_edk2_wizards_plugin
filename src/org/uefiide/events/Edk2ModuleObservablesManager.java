@@ -13,6 +13,7 @@ import org.uefiide.events.internals.Edk2ModuleChangeEvent;
 import org.uefiide.structures.Edk2Module;
 
 import rx.Observable;
+import rx.internal.schedulers.GenericScheduledExecutorService;
 import rx.subjects.PublishSubject;
 
 
@@ -20,7 +21,7 @@ public class Edk2ModuleObservablesManager {
 	private static boolean initialized = false;
 	
 	// Event streams
-	private static PublishSubject<IResourceDelta> deltaObserver;
+	private static PublishSubject<IResourceDelta> deltaObservable;
 	private static Observable<Edk2ModuleChangeEvent> moduleChangesObservable;
 	
 	public static void init() {
@@ -28,8 +29,8 @@ public class Edk2ModuleObservablesManager {
 			return ;
 		}
 		initialized = true;
-		deltaObserver = PublishSubject.create();
-		moduleChangesObservable = deltaObserver
+		deltaObservable = PublishSubject.create();
+		moduleChangesObservable = deltaObservable
 				.map(delta -> findInfResource(delta))
 				.filter(resource -> resource != null)
 				.map(resource -> {
@@ -44,6 +45,7 @@ public class Edk2ModuleObservablesManager {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
+					
 					
 					return returnedEvent;
 				})
@@ -63,7 +65,7 @@ public class Edk2ModuleObservablesManager {
 		return oldModule;
 	}
 	public static void notifyResourceChanged(IResourceDelta delta) {
-		deltaObserver.onNext(delta);
+		deltaObservable.onNext(delta);
 	}
 	
 	public static Observable<Edk2ModuleChangeEvent> getProjectModuleModificationObservable() {
