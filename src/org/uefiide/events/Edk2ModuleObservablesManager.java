@@ -9,6 +9,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
+import org.uefiide.events.internals.Edk2ModuleChangeEvent;
 import org.uefiide.structures.Edk2Module;
 
 import rx.Observable;
@@ -17,30 +18,6 @@ import rx.subjects.PublishSubject;
 
 
 public class Edk2ModuleObservablesManager {
-	public static class Edk2ModuleChangeEvent {
-		private IProject project;
-		private Edk2Module oldModule;
-		private Edk2Module newModule;
-		
-		public Edk2ModuleChangeEvent(IProject project, Edk2Module oldModule, Edk2Module newModule) {
-			this.project = project;
-			this.newModule = newModule;
-			this.oldModule = oldModule;
-		}
-
-		public IProject getProject() {
-			return project;
-		}
-
-		public Edk2Module getOldModule() {
-			return oldModule;
-		}
-		
-		public Edk2Module getNewModule() {
-			return newModule;
-		}
-	}
-	
 	private static boolean initialized = false;
 	
 	// Event streams
