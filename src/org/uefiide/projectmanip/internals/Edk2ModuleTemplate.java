@@ -38,6 +38,10 @@ public abstract class Edk2ModuleTemplate {
 		case UEFI_DRIVER:
 			moduleTemplate = new Edk2UefiDriverTemplate(context);
 			break;
+			
+		case UEFI_STDLIB_APPLICATION:
+		default:
+			break;
 		}
 		
 		return moduleTemplate;
