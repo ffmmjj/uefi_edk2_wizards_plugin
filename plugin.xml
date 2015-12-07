@@ -26,14 +26,6 @@
       </wizard>
    </extension>
    <extension
-         point="org.eclipse.ui.commands">
-         <command
-               id="UefiIde.menuentries.new.EDK2Source"
-               defaultHandler="org.uefiide.handlers.NewEdk2SourceHandler"
-               name="New EDK2 Module Source file handler">
-         </command>
-   </extension>
-   <extension
          point="org.eclipse.ui.startup">
       <startup
             class="org.uefiide.startup.SetResourceChangeListenerStartup">
