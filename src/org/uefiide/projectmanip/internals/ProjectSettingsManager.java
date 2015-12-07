@@ -19,11 +19,9 @@ import org.eclipse.cdt.managedbuilder.core.ManagedBuildManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
+@SuppressWarnings("restriction")
 public class ProjectSettingsManager {
-	private IProject project;
-	
-	public ProjectSettingsManager(IProject project) {
-		this.project = project;		
+	private ProjectSettingsManager() {
 	}
 	
 	public static void setIncludePaths(IProject project, List<String> includePaths) {

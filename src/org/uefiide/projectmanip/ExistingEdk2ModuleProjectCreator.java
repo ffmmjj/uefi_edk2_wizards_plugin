@@ -39,6 +39,7 @@ import org.uefiide.projectmanip.internals.ProjectSettingsManager;
 import org.uefiide.structures.Edk2Module;
 import org.uefiide.structures.Edk2Package;
 
+@SuppressWarnings("restriction")
 public class ExistingEdk2ModuleProjectCreator {
 
 	public static void CreateEDK2ProjectFromExistingModule(Edk2Module module, IProgressMonitor monitor) throws CoreException {

@@ -7,6 +7,7 @@ import org.eclipse.ui.internal.registry.EditorDescriptor;
 import org.eclipse.ui.internal.registry.EditorRegistry;
 import org.eclipse.ui.internal.registry.FileEditorMapping;
 
+@SuppressWarnings("restriction")
 public class SetDefaultEditorsStartup implements IStartup {
 
 	@Override
