@@ -72,6 +72,9 @@ public abstract class Edk2Element {
 				return currentDir.toString();
 			}
 			
+			if(currentDir.isRoot()) {
+				break;
+			}
 			currentDir = currentDir.removeLastSegments(1);
 		}
 		

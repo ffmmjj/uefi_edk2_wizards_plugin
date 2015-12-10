@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.uefiide.structures.Edk2Module;
 import org.uefiide.structures.Edk2Module.Edk2ModuleType;
 
 public class NewEdk2ModuleProjectPage extends WizardPage implements ModifyListener {
@@ -277,16 +278,10 @@ public class NewEdk2ModuleProjectPage extends WizardPage implements ModifyListen
 				moduleRootFolderExists() && 
 				!moduleAlreadyExists();
 		return result;
-		/*return 	!moduleName.getText().isEmpty() &&
-				!moduleRootFolder.getText().isEmpty() &&
-				moduleRootFolderExists() && 
-				!moduleAlreadyExists();*/
 	}
 	
 	@Override
 	public void modifyText(ModifyEvent e) {
-		this.setPageComplete(this.shouldCompletePage());
-		
 		if(moduleRootFolder.getText().isEmpty()) {
 			this.setErrorMessage(null);
 		} else if(!moduleRootFolderExists()) {
@@ -294,8 +289,16 @@ public class NewEdk2ModuleProjectPage extends WizardPage implements ModifyListen
 		} else if(!moduleName.getText().isEmpty() && moduleAlreadyExists()) {
 			this.setErrorMessage("A module with the same name already exists in the selected root folder.");
 		} else {
-			this.setErrorMessage(null);
+			try {
+				workspacePath.setText(Edk2Module.inferWorkspaceFromElementPath(moduleRootFolder.getText()));
+				this.setPageComplete(this.shouldCompletePage());
+				return ;
+			} catch(IllegalArgumentException ex) {
+				this.setErrorMessage("Could not infer workspace for the selected module.");
+			}
 		}
+		
+		this.setPageComplete(false);
 	}
 	
 	@Override

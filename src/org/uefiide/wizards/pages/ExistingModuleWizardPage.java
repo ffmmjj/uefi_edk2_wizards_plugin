@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.uefiide.structures.Edk2Module;
 
 public class ExistingModuleWizardPage extends WizardPage implements ModifyListener {
 	private Button infBrowserBtn;
@@ -176,23 +177,26 @@ public class ExistingModuleWizardPage extends WizardPage implements ModifyListen
 		return this.workspacePath.getText();
 	}
 	
-	private boolean shouldEnableFinishButton() {
-		return !infLocationPath.getText().isEmpty() &&
-				(new File(infLocationPath.getText()).exists());
-	}
-	
 	private boolean moduleDoesNotExist() {
 		IPath modulePath = new Path(infLocationPath.getText().toString());
 		return !(modulePath.toFile().exists());
 	}
 
 	public void modifyText(ModifyEvent e) {
-		this.setPageComplete(shouldEnableFinishButton());
-		
 		if(!infLocationPath.getText().toString().isEmpty() && moduleDoesNotExist()) {
 			this.setErrorMessage("The passed module does not exist!");
 		} else {
-			this.setErrorMessage(null);
+			try {
+				workspacePath.setText(Edk2Module.inferWorkspaceFromElementPath(infLocationPath.getText()));
+				this.setErrorMessage(null);
+				this.setPageComplete(true);
+				
+				return ;
+			} catch(IllegalArgumentException ex) {
+				this.setErrorMessage("Could not infer workspace for the selected module.");
+			}
+			
 		}
+		this.setPageComplete(false);
 	}
 }
