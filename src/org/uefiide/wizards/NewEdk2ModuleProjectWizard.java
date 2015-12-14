@@ -11,6 +11,7 @@ import org.eclipse.ui.IWorkbench;
 import org.uefiide.projectmanip.ModuleProjectCreationContext;
 import org.uefiide.projectmanip.NewEdk2ModuleProjectCreator;
 import org.uefiide.structures.Edk2Element;
+import org.uefiide.structures.Edk2Module.Edk2ModuleType;
 import org.uefiide.wizards.pages.NewEdk2ModuleProjectPage;
 import org.uefiide.wizards.pages.NewLibraryClassProjectPage;
 import org.uefiide.wizards.pages.NewUefiDriverProjectPage;
@@ -37,10 +38,11 @@ public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IR
 		addPage(newModuleWizardPage);
 		
 		this.libraryClassPage = new NewLibraryClassProjectPage();
-		newModuleWizardPage.setPageComplete(false);
+		libraryClassPage.setPageComplete(false);
 		addPage(libraryClassPage);
 		
-		uefiDriverPage = new NewUefiDriverProjectPage();
+		this.uefiDriverPage = new NewUefiDriverProjectPage();
+		uefiDriverPage.setPageComplete(true);
 		addPage(uefiDriverPage);
 	}
 	
@@ -98,6 +100,12 @@ public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IR
 			e.printStackTrace();
 		}
 		return true;
+	}
+	
+	@Override
+	public boolean canFinish() {
+		return !(newModuleWizardPage.getSelectedModuleType() == Edk2ModuleType.LIBRARY_CLASS_IMPLEMENTATION) ||
+				super.canFinish();
 	}
 
 }

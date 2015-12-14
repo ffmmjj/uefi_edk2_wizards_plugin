@@ -89,7 +89,9 @@ public class NewLibraryClassProjectPage extends WizardPage implements ModifyList
 
 	@Override
 	public void modifyText(ModifyEvent e) {
-		this.setPageComplete(!(libraryClassName.getText().isEmpty() || libraryClassHeaderPath.getText().isEmpty()));
+		boolean isPageComplete = !(libraryClassName.getText().isEmpty() || libraryClassHeaderPath.getText().isEmpty());
+		this.setPageComplete(isPageComplete);
+		//this.getPreviousPage().set
 	}
 	
 	@Override

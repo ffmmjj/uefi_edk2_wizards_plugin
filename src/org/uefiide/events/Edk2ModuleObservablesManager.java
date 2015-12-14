@@ -13,7 +13,6 @@ import org.uefiide.events.internals.Edk2ModuleChangeEvent;
 import org.uefiide.structures.Edk2Module;
 
 import rx.Observable;
-import rx.internal.schedulers.GenericScheduledExecutorService;
 import rx.subjects.PublishSubject;
 
 
@@ -29,6 +28,7 @@ public class Edk2ModuleObservablesManager {
 			return ;
 		}
 		initialized = true;
+		
 		deltaObservable = PublishSubject.create();
 		moduleChangesObservable = deltaObservable
 				.map(delta -> findInfResource(delta))
@@ -45,7 +45,6 @@ public class Edk2ModuleObservablesManager {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					
 					
 					return returnedEvent;
 				})
