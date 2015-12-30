@@ -1,4 +1,4 @@
-package org.uefiide.utilities.parsers;
+package org.uefiide.structures.parsers;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

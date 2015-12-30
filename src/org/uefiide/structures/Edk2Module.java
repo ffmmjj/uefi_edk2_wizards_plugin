@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.uefiide.structures.blocks.Edk2ElementBlock;
 import org.uefiide.structures.blocks.visitors.BlockUpdateVisitor;
-import org.uefiide.utilities.parsers.ModuleInfParser;
+import org.uefiide.structures.parsers.ModuleInfParser;
 
 public class Edk2Module extends Edk2Element {
 	public enum Edk2ModuleType {
