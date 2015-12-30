@@ -20,6 +20,10 @@ public class LibraryClassesBlock implements Edk2ElementBlock {
 		return this.libraryClasses;
 	}
 	
+	public void setLibraryClasses(List<String> libraryClasses) {
+		this.libraryClasses = libraryClasses;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
@@ -39,5 +43,6 @@ public class LibraryClassesBlock implements Edk2ElementBlock {
 
 	@Override
 	public void accept(Edk2ElementBlockVisitor visitor) {
+		visitor.visit(this);
 	}
 }

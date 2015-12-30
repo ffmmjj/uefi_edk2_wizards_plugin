@@ -26,8 +26,10 @@ public class Edk2Module extends Edk2Element {
 	
 	private ModuleInfParser parser;
 	private List<String> sources = new LinkedList<String>();
-	private List<Edk2Package> packages = new LinkedList<Edk2Package>();
+	private List<String> packages = new LinkedList<String>();
+	private List<String> libraries = new LinkedList<String>();
 	private Map<String, String> definitions = new HashMap<String, String>();
+	
 	boolean dirty = false;
 	
 	public Edk2Module(String path) throws FileNotFoundException, IOException {
@@ -46,7 +48,9 @@ public class Edk2Module extends Edk2Element {
 	}
 	
 	public String getName() {
-		return this.parser.getModuleName();
+		String filename = new Path(this.getElementPath()).lastSegment();
+		
+		return filename.substring(0, filename.lastIndexOf('.'));
 	}
 	
 	public Map<String, String> getDefines() {
@@ -73,7 +77,7 @@ public class Edk2Module extends Edk2Element {
 		dirty = true;
 	}
 	
-	public void setPackages(List<Edk2Package> packages) {
+	public void setPackages(List<String> packages) {
 		this.packages = packages;
 		dirty = true;
 	}
@@ -88,7 +92,8 @@ public class Edk2Module extends Edk2Element {
 		try {
 			PrintWriter writer = new PrintWriter(this.getElementPath(), "UTF-8");
 			BlockUpdateVisitor updateVisitor = new BlockUpdateVisitor(this.sources, 
-												Edk2PackageListToPackageNameList(this.packages), 
+												this.packages,
+												this.libraries,
 												this.definitions);
 			
 			List<Edk2ElementBlock> blocks = this.parser.getRawBlocks();
@@ -110,22 +115,18 @@ public class Edk2Module extends Edk2Element {
 		parser = new ModuleInfParser(this);
 		this.sources = parser.getModuleSources();
 		this.definitions = parser.getModuleDefines();
-		
-		IPath workspacePath = new Path(this.getWorkspacePath());
-		for(String packageName : this.parser.getModulePackages()) {
-			this.packages.add(new Edk2Package(workspacePath.append(packageName).toString(), this.getWorkspacePath()));
-		}
 	}
 	
-	private List<String> Edk2PackageListToPackageNameList(List<Edk2Package> packages) {
-		List<String> packageNames = new LinkedList<String>();
-		IPath workspacePath = new Path(this.getWorkspacePath());
-		
-		for(Edk2Package p : packages) {
-			IPath packagePath = new Path(p.getElementPath()).makeRelativeTo(workspacePath);
-			packageNames.add(packagePath.toString());
-		}
-		
-		return packageNames;
+	public List<String> getEdk2PackageNames() {
+		return this.parser.getModulePackages();
+	}
+	
+	public List<String> getLibraryClasses() {
+		return this.libraries;
+	}
+	
+	public void setLibraryClasses(List<String> libraries) {
+		this.libraries = libraries;
+		dirty = true;
 	}
 }

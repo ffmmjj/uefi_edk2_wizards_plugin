@@ -11,8 +11,14 @@ import java.util.Map;
 
 import org.uefiide.structures.Edk2Module;
 import org.uefiide.structures.blocks.CommentBlock;
+import org.uefiide.structures.blocks.DefinitionsBlock;
 import org.uefiide.structures.blocks.Edk2ElementBlock;
 import org.uefiide.structures.blocks.Edk2ElementBlockFactory;
+import org.uefiide.structures.blocks.Edk2ElementBlockType;
+import org.uefiide.structures.blocks.LibraryClassesBlock;
+import org.uefiide.structures.blocks.PackagesBlock;
+import org.uefiide.structures.blocks.SourcesBlock;
+import org.uefiide.structures.blocks.visitors.BlockFinderVisitor;
 import org.uefiide.structures.blocks.visitors.Edk2ElementBlockVisitor;
 import org.uefiide.structures.blocks.visitors.Edk2ModuleVisitor;
 
@@ -20,6 +26,7 @@ public class ModuleInfParser {
 	List<Edk2ElementBlock> rawBlocks;
 	private List<String> sources = new LinkedList<String>();
 	private List<String> packages = new LinkedList<String>();
+	private List<String> libraries = new LinkedList<String>();
 	private Map<String, String> definitions = new HashMap<String, String>();
 	
 	private void parseModule(Edk2Module module) throws IOException, FileNotFoundException {
@@ -34,15 +41,47 @@ public class ModuleInfParser {
 			while((line = fileReader.readLine()) != null) {
 				currentBlock = processLine(line, currentBlock);
 			}
-			this.rawBlocks.add(currentBlock);
+			if(currentBlock != null) {
+				this.rawBlocks.add(currentBlock);
+			}
 			extractModuleInformation();
 			
 		} finally {
 			fileReader.close();
 		}
+		
+		checkAndCreateMandatoryBlocks();
 	}
 	
 	
+	private void checkAndCreateMandatoryBlocks() {
+		BlockFinderVisitor definitionsFinder = new BlockFinderVisitor(Edk2ElementBlockType.DEFINITIONS_BLOCK);
+		BlockFinderVisitor sourcesFinder = new BlockFinderVisitor(Edk2ElementBlockType.SOURCES_BLOCK);
+		BlockFinderVisitor packagesFinder = new BlockFinderVisitor(Edk2ElementBlockType.PACKAGES_BLOCK);
+		BlockFinderVisitor librariesFinder = new BlockFinderVisitor(Edk2ElementBlockType.LIBRARY_CLASSES_BLOCK);
+		
+		for(Edk2ElementBlock block : rawBlocks) {
+			block.accept(definitionsFinder);
+			block.accept(sourcesFinder);
+			block.accept(packagesFinder);
+			block.accept(librariesFinder);
+		}
+		
+		if(!definitionsFinder.foundBlock()) {
+			rawBlocks.add(new DefinitionsBlock());
+		}
+		if(!sourcesFinder.foundBlock()) {
+			rawBlocks.add(new SourcesBlock());
+		}
+		if(!packagesFinder.foundBlock()) {
+			rawBlocks.add(new PackagesBlock());
+		}
+		if(!librariesFinder.foundBlock()) {
+			rawBlocks.add(new LibraryClassesBlock());
+		}
+	}
+
+
 	public ModuleInfParser(Edk2Module module) throws IOException, FileNotFoundException {
 		parseModule(module);
 	}
@@ -76,7 +115,7 @@ public class ModuleInfParser {
 	}
 	
 	private void extractModuleInformation() {
-		Edk2ElementBlockVisitor visitor = new Edk2ModuleVisitor(sources, packages, definitions);
+		Edk2ElementBlockVisitor visitor = new Edk2ModuleVisitor(sources, packages, libraries, definitions);
 		for(Edk2ElementBlock block : rawBlocks) {
 			block.accept(visitor);
 		}
