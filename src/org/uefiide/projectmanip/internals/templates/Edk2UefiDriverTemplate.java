@@ -3,11 +3,14 @@ package org.uefiide.projectmanip.internals.templates;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.core.runtime.Path;
 import org.uefiide.projectmanip.ModuleProjectCreationContext;
 import org.uefiide.projectmanip.internals.Edk2ModuleTemplate;
+import org.uefiide.structures.Edk2Module;
 
 public class Edk2UefiDriverTemplate extends Edk2ModuleTemplate {
 
@@ -20,30 +23,38 @@ public class Edk2UefiDriverTemplate extends Edk2ModuleTemplate {
 		String moduleLocation = context.getModuleLocation();
 		String moduleName = context.getModuleName();
 		File infFile = new File(new Path(moduleLocation).append(moduleName + ".inf").toString());
-		FileOutputStream writer = new FileOutputStream(infFile);
 		
 		if(!infFile.exists()) {
 			infFile.createNewFile();
 		}
 		
-		writer.write("[Defines]\n".getBytes());
-		writer.write("  MODULE_TYPE = UEFI_DRIVER\n".getBytes());
-		writer.write("  INF_VERSION = 0x00010006\n".getBytes());
-		writer.write(("  BASE_NAME = " + moduleName + "\n").getBytes());
-		writer.write("  VERSION_STRING = 0.1\n".getBytes());
-		writer.write(("  FILE_GUID = " + UUID.randomUUID().toString() + "\n").getBytes());
-		writer.write(("  ENTRY_POINT = " + moduleName + "EntryPoint\n\n").getBytes());
-		writer.write("[Sources]\n".getBytes());
-		writer.write(("  " + moduleName + ".c\n").getBytes());
-		if(context.followsUefiDriverModel()) {
-			writer.write("  DriverBinding.c\n\n".getBytes());
-		}
-		writer.write("[Packages]\n".getBytes());
-		writer.write("  MdePkg/MdePkg.dec\n\n".getBytes());
-		writer.write("[LibraryClasses]\n".getBytes());
-		writer.write("  UefiLib\n".getBytes());
+		Edk2Module newModule = new Edk2Module(infFile.getAbsolutePath(), context.getWorkspaceLocation());
+	    Map<String, String> defines = newModule.getDefines();
+	    List<String> sources = newModule.getSources();
+	    List<String> libraries = newModule.getLibraryClasses();
+	    List<String> packages = newModule.getEdk2PackageNames();
+	    
+		defines.put("MODULE_TYPE", "UEFI_DRIVER");
+		defines.put("INF_VERSION", "0x00010006");
+		defines.put("BASE_NAME", moduleName);
+		defines.put("VERSION_STRING", "0.1");
+		defines.put("FILE_GUID", UUID.randomUUID().toString());
+		defines.put("ENTRY_POINT", moduleName + "EntryPoint\n\n");
 		
-		writer.close();
+		sources.add(moduleName + ".c");
+		if(context.followsUefiDriverModel()) {
+			sources.add("DriverBinding.c");
+		}
+		
+		packages.add("MdePkg/MdePkg.dec");
+		
+		libraries.add("UefiLib");
+		
+		newModule.setDefinitions(defines);
+		newModule.setPackages(packages);
+		newModule.setSources(sources);
+		newModule.setLibraryClasses(libraries);
+		newModule.save();
 	}
 
 	@Override
