@@ -87,108 +87,108 @@ public class ExistingEdk2ModuleProjectCreator {
 		.subscribe(job -> job.schedule());
 	}
 
-		private static void updateIncludePaths(IProject project, Edk2Module module) {
-			List<Edk2Package> modulePackages = module.getPackages();
-			List<String> includePaths = new LinkedList<String>();
-			for(Edk2Package p : modulePackages) {
-				includePaths.addAll(p.getAbsoluteIncludePaths());
-			}
-			ProjectSettingsManager.setIncludePaths(project, includePaths);
+	private static void updateIncludePaths(IProject project, Edk2Module module) {
+		List<Edk2Package> modulePackages = module.getPackages();
+		List<String> includePaths = new LinkedList<String>();
+		for(Edk2Package p : modulePackages) {
+			includePaths.addAll(p.getAbsoluteIncludePaths());
 		}
+		ProjectSettingsManager.setIncludePaths(project, includePaths);
+	}
 
-		private static void UpdateProjectStructureFromModuleDiff(IProject project, Edk2Module oldModule, Edk2Module newModule) {
-			try {
-				removeOldSources(project, oldModule, newModule);
-				addNewSources(project, newModule);
-				AddModuleResourceToProject(project, new Path(newModule.getElementPath()).lastSegment().toString());
-			} catch (CoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch(IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		private static void addNewSources(IProject project, Edk2Module newModule) throws CoreException, IOException {
-			for(String source : newModule.getSources()) {
-				AddModuleResourceToProject(project, source);
-			}
-		}
-
-		private static void removeOldSources(IProject project, Edk2Module oldModule, Edk2Module newModule)
-				throws CoreException {
-			if(oldModule != null) {
-				Set<String> oldSources = new HashSet<>();
-				oldSources.addAll(oldModule.getSources());
-				oldSources.removeAll(newModule.getSources());
-
-				for(String oldSource : oldSources) {
-					IFile fileToRemove = project.getFile(oldSource);
-					if(fileToRemove.exists()) {
-						fileToRemove.delete(true, null);
-					}
-				}
-			}
-		}
-
-		private static void UpdateProjectStructureFromModule(IProject project, Edk2Module module) {
-			UpdateProjectStructureFromModuleDiff(project, null, module);
-		}
-
-		private static void ConfigureProjectNature(IProject project) throws CoreException {
-			// Set up build information
-			ICProjectDescriptionManager pdMgr = CoreModel.getDefault().getProjectDescriptionManager();
-			ICProjectDescription cProjDesc = pdMgr.createProjectDescription(project, false);
-			ManagedBuildInfo info = ManagedBuildManager.createBuildInfo(project);
-			ManagedProject mProj = new ManagedProject(cProjDesc);
-			info.setManagedProject(mProj);
-
-			CfgHolder cfgHolder = new CfgHolder(null, null);
-			String s = "0";
-			Configuration config = new Configuration(mProj, (ToolChain)null, ManagedBuildManager.calculateChildId(s, null), cfgHolder.getName());
-			IBuilder builder = config.getEditableBuilder();
-			builder.setManagedBuildOn(false);
-			CConfigurationData data = config.getConfigurationData();
-			cProjDesc.createConfiguration(ManagedBuildManager.CFG_DATA_PROVIDER_ID, data);
-
-			pdMgr.setProjectDescription(project, cProjDesc);
-		}
-
-		private static void AddModuleResourceToProject(IProject project, String resourceRelativePathString) throws CoreException, IOException {
-			String projectLocation = project.getPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"));
-			IPath resourceRelativePath = new Path(resourceRelativePathString);
-			IPath resourceAbsolutePath = new Path(projectLocation).append(resourceRelativePath);
-
-			if(resourceRelativePath.segmentCount() > 1) {
-				IContainer currentFolder = project;
-				IPath currentAbsolutePath = new Path(projectLocation);
-
-				createResourceParentInFileSystem(resourceAbsolutePath);
-
-				for(String segment : resourceRelativePath.removeLastSegments(1).segments()) {
-					currentFolder = currentFolder.getFolder(new Path(segment));
-					currentAbsolutePath = currentAbsolutePath.append(segment);
-
-					if(!currentFolder.exists()) {
-						((IFolder)currentFolder).createLink(currentAbsolutePath, IResource.VIRTUAL, null);
-					}
-				}
-			}
-
-			File resourceInFileSystem = new File(resourceAbsolutePath.toString());
-			if(!resourceInFileSystem.exists()) {
-				resourceInFileSystem.createNewFile();
-			}
-
-			IFile file = project.getFile(resourceRelativePath);
-			if(!file.exists()) {
-				file.createLink(resourceAbsolutePath, IResource.VIRTUAL, null);
-			}
-		}
-
-		private static void createResourceParentInFileSystem(IPath resourceAbsolutePath) {
-			// Create resource's parent if it doesn't exist in the file system
-			File resourceParent = new File(resourceAbsolutePath.removeLastSegments(1).toString());
-			resourceParent.mkdirs();
+	private static void UpdateProjectStructureFromModuleDiff(IProject project, Edk2Module oldModule, Edk2Module newModule) {
+		try {
+			removeOldSources(project, oldModule, newModule);
+			addNewSources(project, newModule);
+			AddModuleResourceToProject(project, new Path(newModule.getElementPath()).lastSegment().toString());
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch(IOException e) {
+			e.printStackTrace();
 		}
 	}
+
+	private static void addNewSources(IProject project, Edk2Module newModule) throws CoreException, IOException {
+		for(String source : newModule.getSources()) {
+			AddModuleResourceToProject(project, source);
+		}
+	}
+
+	private static void removeOldSources(IProject project, Edk2Module oldModule, Edk2Module newModule)
+			throws CoreException {
+		if(oldModule != null) {
+			Set<String> oldSources = new HashSet<>();
+			oldSources.addAll(oldModule.getSources());
+			oldSources.removeAll(newModule.getSources());
+
+			for(String oldSource : oldSources) {
+				IFile fileToRemove = project.getFile(oldSource);
+				if(fileToRemove.exists()) {
+					fileToRemove.delete(true, null);
+				}
+			}
+		}
+	}
+
+	private static void UpdateProjectStructureFromModule(IProject project, Edk2Module module) {
+		UpdateProjectStructureFromModuleDiff(project, null, module);
+	}
+
+	private static void ConfigureProjectNature(IProject project) throws CoreException {
+		// Set up build information
+		ICProjectDescriptionManager pdMgr = CoreModel.getDefault().getProjectDescriptionManager();
+		ICProjectDescription cProjDesc = pdMgr.createProjectDescription(project, false);
+		ManagedBuildInfo info = ManagedBuildManager.createBuildInfo(project);
+		ManagedProject mProj = new ManagedProject(cProjDesc);
+		info.setManagedProject(mProj);
+
+		CfgHolder cfgHolder = new CfgHolder(null, null);
+		String s = "0";
+		Configuration config = new Configuration(mProj, (ToolChain)null, ManagedBuildManager.calculateChildId(s, null), cfgHolder.getName());
+		IBuilder builder = config.getEditableBuilder();
+		builder.setManagedBuildOn(false);
+		CConfigurationData data = config.getConfigurationData();
+		cProjDesc.createConfiguration(ManagedBuildManager.CFG_DATA_PROVIDER_ID, data);
+
+		pdMgr.setProjectDescription(project, cProjDesc);
+	}
+
+	private static void AddModuleResourceToProject(IProject project, String resourceRelativePathString) throws CoreException, IOException {
+		String projectLocation = project.getPersistentProperty(new QualifiedName("Uefi_EDK2_Wizards", "MODULE_ROOT_PATH"));
+		IPath resourceRelativePath = new Path(resourceRelativePathString);
+		IPath resourceAbsolutePath = new Path(projectLocation).append(resourceRelativePath);
+
+		if(resourceRelativePath.segmentCount() > 1) {
+			IContainer currentFolder = project;
+			IPath currentAbsolutePath = new Path(projectLocation);
+
+			createResourceParentInFileSystem(resourceAbsolutePath);
+
+			for(String segment : resourceRelativePath.removeLastSegments(1).segments()) {
+				currentFolder = currentFolder.getFolder(new Path(segment));
+				currentAbsolutePath = currentAbsolutePath.append(segment);
+
+				if(!currentFolder.exists()) {
+					((IFolder)currentFolder).createLink(currentAbsolutePath, IResource.VIRTUAL, null);
+				}
+			}
+		}
+
+		File resourceInFileSystem = new File(resourceAbsolutePath.toString());
+		if(!resourceInFileSystem.exists()) {
+			resourceInFileSystem.createNewFile();
+		}
+
+		IFile file = project.getFile(resourceRelativePath);
+		if(!file.exists()) {
+			file.createLink(resourceAbsolutePath, IResource.VIRTUAL, null);
+		}
+	}
+
+	private static void createResourceParentInFileSystem(IPath resourceAbsolutePath) {
+		// Create resource's parent if it doesn't exist in the file system
+		File resourceParent = new File(resourceAbsolutePath.removeLastSegments(1).toString());
+		resourceParent.mkdirs();
+	}
+}
