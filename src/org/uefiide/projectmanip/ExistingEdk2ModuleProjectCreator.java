@@ -87,7 +87,7 @@ public class ExistingEdk2ModuleProjectCreator {
 		.subscribe(job -> job.schedule());
 	}
 
-		public static void updateIncludePaths(IProject project, Edk2Module module) {
+		private static void updateIncludePaths(IProject project, Edk2Module module) {
 			List<Edk2Package> modulePackages = module.getPackages();
 			List<String> includePaths = new LinkedList<String>();
 			for(Edk2Package p : modulePackages) {
@@ -96,7 +96,7 @@ public class ExistingEdk2ModuleProjectCreator {
 			ProjectSettingsManager.setIncludePaths(project, includePaths);
 		}
 
-		public static void UpdateProjectStructureFromModuleDiff(IProject project, Edk2Module oldModule, Edk2Module newModule) {
+		private static void UpdateProjectStructureFromModuleDiff(IProject project, Edk2Module oldModule, Edk2Module newModule) {
 			try {
 				removeOldSources(project, oldModule, newModule);
 				addNewSources(project, newModule);
@@ -131,7 +131,7 @@ public class ExistingEdk2ModuleProjectCreator {
 			}
 		}
 
-		public static void UpdateProjectStructureFromModule(IProject project, Edk2Module module) {
+		private static void UpdateProjectStructureFromModule(IProject project, Edk2Module module) {
 			UpdateProjectStructureFromModuleDiff(project, null, module);
 		}
 
