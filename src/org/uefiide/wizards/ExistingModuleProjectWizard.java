@@ -43,7 +43,7 @@ public class ExistingModuleProjectWizard extends Wizard implements INewWizard, I
 				projectModule = new Edk2Module(existingModuleWizardPage.getLocation(), existingModuleWizardPage.getWorkspacePath());
 			}
 			
-			ExistingEdk2ModuleProjectCreator.CreateEDK2ProjectFromExistingModule(projectModule, arg0);
+			ExistingEdk2ModuleProjectCreator.createEDK2ProjectFromExistingModule(projectModule, arg0);
 			arg0.done();
 		} catch (CoreException e1) {
 			e1.printStackTrace();

@@ -25,7 +25,7 @@ public class NewEdk2ModuleProjectCreator {
 			template.createModuleTemplate();
 			
 			Edk2Module projectModule = new Edk2Module(moduleLocationPath.toString(), workspace);
-			ExistingEdk2ModuleProjectCreator.CreateEDK2ProjectFromExistingModule(projectModule, monitor);
+			ExistingEdk2ModuleProjectCreator.createEDK2ProjectFromExistingModule(projectModule, monitor);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

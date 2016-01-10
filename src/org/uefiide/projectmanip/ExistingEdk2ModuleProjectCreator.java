@@ -42,7 +42,7 @@ import org.uefiide.structures.Edk2Package;
 @SuppressWarnings("restriction")
 public class ExistingEdk2ModuleProjectCreator {
 
-	public static void CreateEDK2ProjectFromExistingModule(Edk2Module module, IProgressMonitor monitor) throws CoreException {
+	public static void createEDK2ProjectFromExistingModule(Edk2Module module, IProgressMonitor monitor) throws CoreException {
 		IProject newProjectHandle = ResourcesPlugin.getWorkspace().getRoot().getProject(module.getName());
 		IProjectDescription projDesc;
 		newProjectHandle.create(monitor);
