@@ -14,16 +14,12 @@ import org.eclipse.cdt.managedbuilder.internal.core.ToolChain;
 import org.eclipse.cdt.managedbuilder.ui.wizards.CfgHolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.runtime.Status;
 import org.uefiide.events.Edk2ModuleObservablesManager;
 import org.uefiide.structures.Edk2Module;
 
@@ -52,27 +48,7 @@ public class ExistingEdk2ModuleProjectCreator {
 
 		monitor.beginTask("Saving EDK2 project properties", 95);
 
-		setResourceChangeListeners(newProjectHandle);
-	}
-
-	public static void setResourceChangeListeners(IProject newProjectHandle) {
-		Edk2ModuleObservablesManager.getProjectModuleModificationObservable()
-		.filter(event -> event.getProject() == newProjectHandle)
-		.map(ev -> {
-			return new WorkspaceJob("Updating project"){
-				@Override 
-				public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-					Edk2Module module = ev.getNewModule();
-
-					ProjectStructureUpdater.updateIncludePaths(ev.getProject(), module);
-					ProjectStructureUpdater.UpdateProjectStructureFromModuleDiff(ev.getProject(), ev.getOldModule(), module);
-					ev.getProject().refreshLocal(IResource.DEPTH_INFINITE,monitor);
-
-					return Status.OK_STATUS;
-				}
-			};
-		})
-		.subscribe(job -> job.schedule());
+		Edk2ModuleObservablesManager.setResourceChangeListeners(newProjectHandle);
 	}
 
 	private static void ConfigureProjectNature(IProject project) throws CoreException {

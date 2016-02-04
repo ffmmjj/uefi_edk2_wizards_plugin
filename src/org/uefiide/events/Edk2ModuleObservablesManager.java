@@ -7,9 +7,14 @@ import org.eclipse.core.resources.IFileState;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.Status;
 import org.uefiide.events.internals.Edk2ModuleChangeEvent;
+import org.uefiide.projectmanip.ProjectStructureUpdater;
 import org.uefiide.structures.Edk2Module;
 
 import rx.Observable;
@@ -50,25 +55,33 @@ public class Edk2ModuleObservablesManager {
 				})
 				.filter(ev -> ev != null);
 	}
-	private static Edk2Module getOldEdk2Module(IResource resource, String workspacePath)
-			throws CoreException, FileNotFoundException, IOException {
-		Edk2Module oldModule = null;
-		IFile infFile = (IFile) resource;
-		IFileState[] states = infFile.getHistory(null);
-		
-		if(states != null && states.length > 0) {
-			IFileState lastState = states[0];
-			oldModule = new Edk2Module(resource.getLocation().toString(), workspacePath, lastState.getContents());
-		}
-		
-		return oldModule;
-	}
+	
 	public static void notifyResourceChanged(IResourceDelta delta) {
 		deltaObservable.onNext(delta);
 	}
 	
 	public static Observable<Edk2ModuleChangeEvent> getProjectModuleModificationObservable() {
 		return moduleChangesObservable;
+	}
+	
+	public static void setResourceChangeListeners(IProject newProjectHandle) {
+		getProjectModuleModificationObservable()
+		.filter(event -> event.getProject() == newProjectHandle)
+		.map(ev -> {
+			return new WorkspaceJob("Updating project"){
+				@Override 
+				public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
+					Edk2Module module = ev.getNewModule();
+	
+					ProjectStructureUpdater.updateIncludePaths(ev.getProject(), module);
+					ProjectStructureUpdater.UpdateProjectStructureFromModuleDiff(ev.getProject(), ev.getOldModule(), module);
+					ev.getProject().refreshLocal(IResource.DEPTH_INFINITE,monitor);
+	
+					return Status.OK_STATUS;
+				}
+			};
+		})
+		.subscribe(job -> job.schedule());
 	}
 	
 	private static IResource findInfResource(IResourceDelta delta) {
@@ -84,5 +97,19 @@ public class Edk2ModuleObservablesManager {
 		}
 		
 		return null;
+	}
+	
+	private static Edk2Module getOldEdk2Module(IResource resource, String workspacePath)
+			throws CoreException, FileNotFoundException, IOException {
+		Edk2Module oldModule = null;
+		IFile infFile = (IFile) resource;
+		IFileState[] states = infFile.getHistory(null);
+		
+		if(states != null && states.length > 0) {
+			IFileState lastState = states[0];
+			oldModule = new Edk2Module(resource.getLocation().toString(), workspacePath, lastState.getContents());
+		}
+		
+		return oldModule;
 	}
 }
