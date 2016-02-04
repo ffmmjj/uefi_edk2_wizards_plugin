@@ -9,6 +9,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.uefiide.projectmanip.ModuleProjectCreationContext;
+import org.uefiide.projectmanip.ModuleProjectCreationContextBuilder;
 import org.uefiide.projectmanip.NewEdk2ModuleProjectCreator;
 import org.uefiide.structures.Edk2Element;
 import org.uefiide.structures.Edk2Module.Edk2ModuleType;
@@ -76,15 +77,16 @@ public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IR
 			break;
 		}
 		
-		ModuleProjectCreationContext context = new ModuleProjectCreationContext(
-				newModuleWizardPage.getNewModuleName(), 
-				newModuleWizardPage.getNewModuleRootFolder(),
-				workspacePath,
-				newModuleWizardPage.getSelectedModuleType(),
-				libraryClassName,
-				libraryClassHeaderLocation,
-				followsUefiDriverModel
-				);
+		ModuleProjectCreationContextBuilder contextBuilder = new ModuleProjectCreationContextBuilder();
+		ModuleProjectCreationContext context = contextBuilder
+				.withModuleName(newModuleWizardPage.getNewModuleName())
+				.withModuleLocation(newModuleWizardPage.getNewModuleRootFolder())
+				.withWorkspaceLocation(workspacePath)
+				.withModuleType(newModuleWizardPage.getSelectedModuleType())
+				.withLibraryClassName(libraryClassName)
+				.withLibraryClassHeaderLocation(libraryClassHeaderLocation)
+				.withFollowsUefiDriverModel(followsUefiDriverModel)
+				.build();
 				
 		NewEdk2ModuleProjectCreator.CreateNewEdk2ModuleProject(context, arg0);
 		arg0.done();
