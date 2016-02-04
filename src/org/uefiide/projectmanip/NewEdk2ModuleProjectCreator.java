@@ -21,7 +21,7 @@ public class NewEdk2ModuleProjectCreator {
 			IPath moduleFolderPath = new Path(moduleFolder);
 			IPath moduleLocationPath = moduleFolderPath.append(moduleName + ".inf");
 			
-			Edk2ModuleTemplate template = Edk2ModuleTemplate.get(type, context);
+			Edk2ModuleTemplate template = Edk2ModuleTemplate.getTemplate(type, context);
 			template.createModuleTemplate();
 			
 			Edk2Module projectModule = new Edk2Module(moduleLocationPath.toString(), workspace);

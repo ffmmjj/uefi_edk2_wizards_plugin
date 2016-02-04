@@ -11,7 +11,7 @@ import org.uefiide.structures.Edk2Module.Edk2ModuleType;
 public abstract class Edk2ModuleTemplate {
 	protected ModuleProjectCreationContext context;
 	
-	public Edk2ModuleTemplate(ModuleProjectCreationContext context) {
+	protected Edk2ModuleTemplate(ModuleProjectCreationContext context) {
 		this.context = context;
 	}
 	
@@ -20,10 +20,10 @@ public abstract class Edk2ModuleTemplate {
 		writeModuleTemplate();
 	}
 	
-	public abstract void writeModuleTemplate() throws IOException;
-	public abstract void writeSourcesTemplate() throws IOException;
+	protected abstract void writeModuleTemplate() throws IOException;
+	protected abstract void writeSourcesTemplate() throws IOException;
 	
-	public static Edk2ModuleTemplate get(Edk2ModuleType type, ModuleProjectCreationContext context) {
+	public static Edk2ModuleTemplate getTemplate(Edk2ModuleType type, ModuleProjectCreationContext context) {
 		Edk2ModuleTemplate moduleTemplate = null;
 		
 		switch(type) {
