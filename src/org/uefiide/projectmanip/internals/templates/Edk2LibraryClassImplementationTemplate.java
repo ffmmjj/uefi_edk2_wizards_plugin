@@ -42,7 +42,7 @@ public class Edk2LibraryClassImplementationTemplate extends Edk2ModuleTemplate {
 	    Map<String, String> defines = newModule.getDefines();
 	    List<String> sources = newModule.getSources();
 	    List<String> libraries = newModule.getLibraryClasses();
-	    List<String> packages = newModule.getEdk2PackageNames();
+	    List<String> packages = newModule.getPackages();
 	    
 		defines.put("MODULE_TYPE", "BASE");
 		defines.put("INF_VERSION", "0x00010006");

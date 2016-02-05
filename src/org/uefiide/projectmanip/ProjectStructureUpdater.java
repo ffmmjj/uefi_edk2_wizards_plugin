@@ -67,7 +67,7 @@ public class ProjectStructureUpdater {
 	}
 
 	public static void updateIncludePaths(IProject project, Edk2Module module) {
-		List<Edk2Package> modulePackages = module.getPackages();
+		List<Edk2Package> modulePackages = module.getParsedPackages();
 		List<String> includePaths = new LinkedList<String>();
 		for(Edk2Package p : modulePackages) {
 			includePaths.addAll(p.getAbsoluteIncludePaths());

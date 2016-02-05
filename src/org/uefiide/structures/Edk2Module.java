@@ -57,7 +57,7 @@ public class Edk2Module extends Edk2Element {
 		return this.definitions;
 	}
 	
-	public List<Edk2Package> getPackages() {
+	public List<Edk2Package> getParsedPackages() {
 		List<Edk2Package> packages = new LinkedList<Edk2Package>();
 		IPath workspacePath = new Path(this.getWorkspacePath());
 		
@@ -117,7 +117,7 @@ public class Edk2Module extends Edk2Element {
 		this.definitions = parser.getModuleDefines();
 	}
 	
-	public List<String> getEdk2PackageNames() {
+	public List<String> getPackages() {
 		return this.parser.getModulePackages();
 	}
 	
