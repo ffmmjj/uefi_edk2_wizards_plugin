@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
-import org.uefiide.events.Edk2ModuleObservablesManager;
 import org.uefiide.structures.Edk2Module;
 
 @SuppressWarnings("restriction")
@@ -48,7 +47,7 @@ public class ExistingEdk2ModuleProjectCreator {
 
 		monitor.beginTask("Saving EDK2 project properties", 95);
 
-		Edk2ModuleObservablesManager.setResourceChangeListeners(newProjectHandle);
+		ProjectStructureUpdater.setResourceChangeListeners(newProjectHandle);
 	}
 
 	private static void ConfigureProjectNature(IProject project) throws CoreException {

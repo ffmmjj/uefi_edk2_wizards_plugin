@@ -7,6 +7,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.ui.IStartup;
 import org.uefiide.events.Edk2ModuleObservablesManager;
+import org.uefiide.projectmanip.ProjectStructureUpdater;
 
 
 public class SetResourceChangeListenerStartup implements IStartup {
@@ -19,7 +20,7 @@ public class SetResourceChangeListenerStartup implements IStartup {
 		IProject[] currentProjects = root.getProjects();
 		
 		for(IProject project : currentProjects) {
-			Edk2ModuleObservablesManager.setResourceChangeListeners(project);
+			ProjectStructureUpdater.setResourceChangeListeners(project);
 		}
 		
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {

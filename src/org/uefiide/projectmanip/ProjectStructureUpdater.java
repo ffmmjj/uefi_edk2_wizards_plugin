@@ -12,10 +12,15 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.Status;
+import org.uefiide.events.Edk2ModuleObservablesManager;
 import org.uefiide.projectmanip.internals.ProjectSettingsManager;
 import org.uefiide.structures.Edk2Module;
 import org.uefiide.structures.Edk2Package;
@@ -106,5 +111,25 @@ public class ProjectStructureUpdater {
 				}
 			}
 		}
+	}
+
+	public static void setResourceChangeListeners(IProject newProjectHandle) {
+		Edk2ModuleObservablesManager.getProjectModuleModificationObservable()
+		.filter(event -> event.getProject() == newProjectHandle)
+		.map(ev -> {
+			return new WorkspaceJob("Updating project"){
+				@Override 
+				public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
+					Edk2Module module = ev.getNewModule();
+	
+					updateIncludePaths(ev.getProject(), module);
+					UpdateProjectStructureFromModuleDiff(ev.getProject(), ev.getOldModule(), module);
+					ev.getProject().refreshLocal(IResource.DEPTH_INFINITE,monitor);
+	
+					return Status.OK_STATUS;
+				}
+			};
+		})
+		.subscribe(job -> job.schedule());
 	}
 }
