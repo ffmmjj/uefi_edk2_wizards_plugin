@@ -106,8 +106,25 @@ public class NewEdk2ModuleProjectWizard extends Wizard implements INewWizard, IR
 	
 	@Override
 	public boolean canFinish() {
-		return !(newModuleWizardPage.getSelectedModuleType() == Edk2ModuleType.LIBRARY_CLASS_IMPLEMENTATION) ||
-				super.canFinish();
+		boolean isFinished = newModuleWizardPage.isPageComplete();
+		
+		if(isFinished){
+			switch(newModuleWizardPage.getSelectedModuleType()) {
+			case UEFI_APPLICATION:
+			case UEFI_STDLIB_APPLICATION:
+				return true;
+				
+			case LIBRARY_CLASS_IMPLEMENTATION:
+				return libraryClassPage.isPageComplete();
+				
+			case UEFI_DRIVER:
+				return uefiDriverPage.isPageComplete();
+			}
+		}
+		
+		return false;
+		//return super.canFinish(); /*!(newModuleWizardPage.getSelectedModuleType() == Edk2ModuleType.LIBRARY_CLASS_IMPLEMENTATION) ||*/
+				
 	}
 
 }
