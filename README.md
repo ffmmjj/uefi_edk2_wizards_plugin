@@ -8,7 +8,7 @@ This is a work in progress, so feel free to suggest new features and let me know
 [![EDK II plugins for Eclipse - Existing module project ](https://img.youtube.com/vi/BgUr8osUEhg/0.jpg)](https://youtu.be/BgUr8osUEhg)
 
 # Eclipse Update site
- The zipped update site for this Eclipse plugin can be downloaded from [here](https://dl.dropboxusercontent.com/u/4482867/edk-tools-plugin.zip).
+ The zipped update site for this Eclipse plugin can be downloaded from [here](https://github.com/ffmmjj/uefi_edk2_wizards_plugin/releases/download/v0.0.1/edk-tools-plugin.zip).
  Download this file and add it as a local update site to your Eclipse CDT instance
  to install this plugin(You might have to uncheck the option *Group items by category* in the **Install new software** dialog)
  
