@@ -29,6 +29,7 @@ This is a work in progress, so feel free to suggest new features and let me know
     - ~~UEFI Driver Model toggle page;~~
     - Add packages selection page;
     - Add library classes selection page;
+    - Add empty implementation of library class functions;
   - INF editor;
   - Module explorer view;
   - Add PCDs to Indexer;
