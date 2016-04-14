@@ -28,7 +28,11 @@ public abstract class Edk2ModuleTemplate {
 		
 		switch(type) {
 		case UEFI_APPLICATION:
-			moduleTemplate = new Edk2UefiApplicationTemplate(context);
+			moduleTemplate = new Edk2UefiApplicationTemplate(context, false);
+			break;
+			
+		case UEFI_STDLIB_APPLICATION:
+			moduleTemplate = new Edk2UefiApplicationTemplate(context, true);
 			break;
 			
 		case LIBRARY_CLASS_IMPLEMENTATION:
@@ -39,7 +43,7 @@ public abstract class Edk2ModuleTemplate {
 			moduleTemplate = new Edk2UefiDriverTemplate(context);
 			break;
 			
-		case UEFI_STDLIB_APPLICATION:
+		
 		default:
 			break;
 		}

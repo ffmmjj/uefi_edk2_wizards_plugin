@@ -14,9 +14,11 @@ import org.uefiide.structures.Edk2Module;
 import org.uefiide.structures.Edk2Package;
 
 public class Edk2UefiApplicationTemplate extends Edk2ModuleTemplate {
+	private boolean includeStdlib;
 	
-	public Edk2UefiApplicationTemplate(ModuleProjectCreationContext context) {
+	public Edk2UefiApplicationTemplate(ModuleProjectCreationContext context, boolean includeStdlib) {
 		super(context);
+		this.includeStdlib = includeStdlib;
 	}
 	
 	@Override
@@ -40,7 +42,7 @@ public class Edk2UefiApplicationTemplate extends Edk2ModuleTemplate {
 		defines.put("BASE_NAME", moduleName);
 		defines.put("VERSION_STRING", "0.1");
 		defines.put("FILE_GUID", UUID.randomUUID().toString());
-		defines.put("ENTRY_POINT", "ShellCEntryLib");
+		defines.put("ENTRY_POINT", this.includeStdlib ? "ShellCEntryLib" : "UefiMain");
 		
 		sources.add(moduleName + ".c");
 		
@@ -48,7 +50,7 @@ public class Edk2UefiApplicationTemplate extends Edk2ModuleTemplate {
 		packages.add("ShellPkg/ShellPkg.dec");
 		
 		libraries.add("UefiLib");
-		libraries.add("ShellCEntryLib");
+		libraries.add(this.includeStdlib ? "ShellCEntryLib" : "UefiApplicationEntryPoint");
 		
 		newModule.setDefinitions(defines);
 		newModule.setPackages(packages);
@@ -70,19 +72,33 @@ public class Edk2UefiApplicationTemplate extends Edk2ModuleTemplate {
 		
 		writer.write("#include <Uefi.h>\n".getBytes());
 		writer.write("#include <Library/UefiLib.h>\n".getBytes());
-		writer.write("#include  <Library/ShellCEntryLib.h>\n".getBytes());
+		if(this.includeStdlib) {
+			writer.write("#include <Library/ShellCEntryLib.h>\n".getBytes());
+		} else {
+			writer.write("#include <Library/UefiApplicationEntryPoint.h>\n".getBytes());
+		}
 		writer.write("\n".getBytes());
-		writer.write("INTN\n".getBytes());
-		writer.write("EFIAPI\n".getBytes());
-		writer.write("ShellAppMain (\n".getBytes());
-		writer.write("  IN UINTN Argc,\n".getBytes());
-		writer.write("  IN CHAR16 **Argv\n".getBytes());
+		if(this.includeStdlib) {
+			writer.write("INTN\n".getBytes());
+			writer.write("EFIAPI\n".getBytes());
+			writer.write("ShellAppMain (\n".getBytes());
+			writer.write("  IN UINTN Argc,\n".getBytes());
+			writer.write("  IN CHAR16 **Argv\n".getBytes());
+		} else {
+			writer.write("EFI_STATUS\n".getBytes());
+			writer.write("EFIAPI\n".getBytes());
+			writer.write("UefiMain (\n".getBytes());
+			writer.write("  IN EFI_HANDLE ImageHandle,\n".getBytes());
+			writer.write("  IN EFI_SYSTEM_TABLE *SystemTable\n".getBytes());
+		}
 		writer.write("  )\n".getBytes());
 		writer.write("{\n".getBytes());
 		writer.write("  Print(L\"Hello there fellow Programmer.\\n\");\n".getBytes());
 		writer.write("  Print(L\"Welcome to the world of EDK II.\\n\");\n".getBytes());
 		writer.write("\n".getBytes());
-		writer.write("  return(0);\n".getBytes());
+		writer.write(this.includeStdlib ? 
+				"  return(0);\n".getBytes() : 
+				"  return EFI_SUCCESS;\n".getBytes());
 		writer.write("}\n".getBytes());
 		
 		writer.close();
